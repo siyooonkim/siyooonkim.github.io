@@ -1,0 +1,33 @@
+---
+title: 'MDX로 기술 메모를 남길 때 좋아지는 점'
+description: '짧은 코드, 표, 경고 블록이 섞인 글을 쓸 때 MDX가 왜 편한지 기록했습니다.'
+pubDate: '2026-04-02'
+tags: ['mdx', 'writing', 'frontend']
+---
+
+MDX는 마크다운의 가벼움을 유지하면서도, 글 안에 작은 UI 조각을 자연스럽게 넣을 수 있다는 점이 좋다.
+
+## 짧은 비교
+
+| 방식 | 장점 | 단점 |
+| --- | --- | --- |
+| Markdown | 단순하고 빠름 | 표현력이 제한적임 |
+| MDX | 글과 컴포넌트를 함께 다룸 | 과하게 쓰면 글이 무거워짐 |
+
+## 코드 예시
+
+```ts
+type ReviewPoint = {
+  label: string;
+  why: string;
+};
+
+const reviewChecklist: ReviewPoint[] = [
+  { label: 'Boundary', why: '변경 전파 범위를 줄인다.' },
+  { label: 'Ownership', why: '책임 소재를 분명하게 만든다.' },
+];
+```
+
+## 결론
+
+MDX는 글보다 UI가 앞에 나오면 금방 산만해진다. 그래서 저는 **기본은 Markdown**, 상호작용이나 시각적 보조가 실제로 필요할 때만 MDX를 쓰는 쪽이 더 좋다고 본다.

@@ -1,0 +1,91 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	post: CollectionEntry<'blog'>;
+	featured?: boolean;
+}
+
+const { post, featured = false } = Astro.props;
+---
+
+<article class:list={["post-card", { featured }] }>
+	<a href={`/posts/${post.slug}/`} class="card-link">
+		{post.data.heroImage && (
+			<Image src={post.data.heroImage} alt={post.data.title} widths={[720, 1200]} sizes="(max-width: 960px) 100vw, 720px" />
+		)}
+		<div class="card-copy">
+			<p class="card-date"><FormattedDate date={post.data.pubDate} /></p>
+			<h3>{post.data.title}</h3>
+			<p class="card-description">{post.data.description}</p>
+			{post.data.tags.length > 0 && (
+				<ul class="tag-row" aria-label="Tags">
+					{post.data.tags.map((tag: string) => <li>{tag}</li>)}
+				</ul>
+			)}
+		</div>
+	</a>
+</article>
+
+<style>
+	.post-card {
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 28px;
+		background: rgba(255, 255, 255, 0.03);
+		overflow: hidden;
+		transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+	}
+	.post-card:hover {
+		transform: translateY(-4px);
+		border-color: rgba(255, 255, 255, 0.18);
+		background: rgba(255, 255, 255, 0.05);
+	}
+	.card-link {
+		display: grid;
+		color: inherit;
+		text-decoration: none;
+	}
+	img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		border-radius: 0;
+	}
+	.card-copy {
+		padding: 1.4rem;
+	}
+	.card-date {
+		margin: 0 0 0.65rem;
+		font-size: 0.9rem;
+		color: var(--text-subtle);
+	}
+	h3 {
+		margin: 0;
+		font-size: clamp(1.35rem, 1.2rem + 0.5vw, 1.75rem);
+	}
+	.card-description {
+		margin: 0.85rem 0 0;
+		color: var(--text-muted);
+	}
+	.tag-row {
+		list-style: none;
+		display: flex;
+		gap: 0.5rem;
+		padding: 0;
+		margin: 1rem 0 0;
+		flex-wrap: wrap;
+	}
+	.tag-row li {
+		padding: 0.3rem 0.6rem;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.06);
+		color: var(--text-subtle);
+		font-size: 0.83rem;
+	}
+	.post-card.featured h3 {
+		font-size: clamp(1.85rem, 1.5rem + 1vw, 2.45rem);
+	}
+</style>

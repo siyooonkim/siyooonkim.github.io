@@ -1,0 +1,74 @@
+---
+interface Heading {
+	depth: number;
+	slug: string;
+	text: string;
+}
+
+interface Props {
+	headings: Heading[];
+}
+
+const { headings } = Astro.props;
+const visibleHeadings = headings.filter((heading) => heading.depth <= 3);
+---
+
+{
+	visibleHeadings.length > 0 && (
+		<aside class="toc">
+			<p class="toc-title">On this page</p>
+			<ol>
+				{visibleHeadings.map((heading) => (
+					<li class={`depth-${heading.depth}`}>
+						<a href={`#${heading.slug}`}>{heading.text}</a>
+					</li>
+				))}
+			</ol>
+		</aside>
+	)
+}
+
+<style>
+	.toc {
+		position: sticky;
+		top: 5.5rem;
+		padding: 1.2rem 1.1rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 20px;
+		background: rgba(255, 255, 255, 0.03);
+	}
+	.toc-title {
+		margin: 0 0 0.9rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--text-subtle);
+	}
+	ol {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.65rem;
+	}
+	li {
+		line-height: 1.45;
+	}
+	li.depth-3 {
+		padding-left: 0.85rem;
+	}
+	a {
+		color: var(--text-muted);
+		text-decoration: none;
+		font-size: 0.95rem;
+	}
+	a:hover {
+		color: var(--text-strong);
+	}
+	@media (max-width: 1040px) {
+		.toc {
+			position: static;
+		}
+	}
+</style>
