@@ -18,6 +18,7 @@ const { post, featured = false } = Astro.props;
 		)}
 		<div class="card-copy">
 			<p class="card-date"><FormattedDate date={post.data.pubDate} /></p>
+			<p class="card-category">{post.data.category}</p>
 			<h3>{post.data.title}</h3>
 			<p class="card-description">{post.data.description}</p>
 			{post.data.tags.length > 0 && (
@@ -61,6 +62,14 @@ const { post, featured = false } = Astro.props;
 		margin: 0 0 0.65rem;
 		font-size: 0.9rem;
 		color: var(--text-subtle);
+	}
+	.card-category {
+		margin: 0 0 0.55rem;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--accent);
 	}
 	h3 {
 		margin: 0;

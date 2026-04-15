@@ -2,6 +2,7 @@
 title: '답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (1)'
 description: '버스 알림 앱(버스벨)을 만들어가게 된 배경과 첫 문제 정의를 정리했습니다.'
 pubDate: '2025-09-06'
+category: '개발일지'
 tags: ['project', 'busbell', 'mobile']
 draft: false
 ---

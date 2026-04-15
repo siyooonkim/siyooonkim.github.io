@@ -2,6 +2,7 @@
 title: 'AI 시대에 개발자가 더 중요해지는 이유'
 description: '코드를 직접 치는 시간은 줄어들어도, 판단의 질이 더 중요해지는 이유를 정리했습니다.'
 pubDate: '2026-04-15'
+category: 'AI'
 tags: ['AI', 'career', 'software-design']
 ---
 

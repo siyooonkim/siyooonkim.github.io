@@ -2,6 +2,7 @@
 title: '백엔드 경계를 나눌 때 먼저 보는 것들'
 description: '서비스 경계를 나누는 기준을 기술보다 변경 비용 관점에서 정리했습니다.'
 pubDate: '2026-04-10'
+category: '백엔드·데이터베이스'
 tags: ['backend', 'architecture', 'design']
 ---
 
