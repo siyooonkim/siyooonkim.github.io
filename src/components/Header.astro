@@ -1,0 +1,68 @@
+---
+import { SITE_TITLE } from '../consts';
+---
+
+<header>
+	<nav class="nav-shell">
+		<a class="brand" href="/">{SITE_TITLE}</a>
+		<div class="nav-links">
+			<a href="/">Home</a>
+			<a href="/posts">Posts</a>
+			<a href="/about">About</a>
+			<a href="/rss.xml">RSS</a>
+			<a href="https://github.com/siyooonkim" target="_blank" rel="noreferrer">GitHub</a>
+		</div>
+	</nav>
+</header>
+<style>
+	header {
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		backdrop-filter: blur(18px);
+		background: rgba(11, 15, 23, 0.72);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	}
+	.nav-shell {
+		width: min(1120px, calc(100% - 32px));
+		margin: 0 auto;
+		padding: 1rem 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.25rem;
+	}
+	.brand {
+		color: var(--text-strong);
+		font-size: 1rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		text-decoration: none;
+	}
+	.nav-links {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+	.nav-links a {
+		padding: 0.2rem 0;
+		color: var(--text-muted);
+		font-size: 0.95rem;
+		text-decoration: none;
+		transition: color 160ms ease;
+	}
+	.nav-links a:hover {
+		color: var(--text-strong);
+	}
+	@media (max-width: 720px) {
+		.nav-shell {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+		.nav-links {
+			gap: 0.85rem;
+		}
+	}
+</style>

@@ -1,0 +1,48 @@
+---
+import { SITE_AUTHOR } from '../consts';
+const today = new Date();
+---
+
+<footer>
+	<div class="footer-shell">
+		<p>© {today.getFullYear()} {SITE_AUTHOR}. Built with Astro and published on GitHub Pages.</p>
+		<div class="footer-links">
+			<a href="https://github.com/siyooonkim" target="_blank" rel="noreferrer">GitHub</a>
+			<a href="https://www.linkedin.com/in/siyoon-kim-8a7b1417b/" target="_blank" rel="noreferrer">LinkedIn</a>
+			<a href="mailto:ksyoon0718@gmail.com">Email</a>
+		</div>
+	</div>
+</footer>
+<style>
+	footer {
+		padding: 2rem 0 3.5rem;
+	}
+	.footer-shell {
+		width: min(1120px, calc(100% - 32px));
+		margin: 0 auto;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 1em;
+		padding-top: 1.75rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
+		color: var(--text-subtle);
+	}
+	.footer-shell p {
+		margin: 0;
+		font-size: 0.95rem;
+	}
+	.footer-links {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+	.footer-links a {
+		text-decoration: none;
+		color: var(--text-subtle);
+	}
+	.footer-links a:hover {
+		color: var(--text-strong);
+	}
+</style>
