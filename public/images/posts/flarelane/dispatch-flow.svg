@@ -1,0 +1,42 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="760" rx="28" fill="#0F1720"/>
+  <rect x="36" y="36" width="1128" height="688" rx="24" fill="#131D29" stroke="#243244"/>
+  <text x="72" y="96" fill="#F8FAFC" font-size="40" font-family="Arial, sans-serif" font-weight="700">CRM 푸시 발송 전체 흐름</text>
+  <text x="72" y="132" fill="#94A3B8" font-size="22" font-family="Arial, sans-serif">할인 이벤트 발생부터 candidate 저장, 락 획득, 발송, 다음 job 예약까지</text>
+
+  <rect x="84" y="190" width="230" height="110" rx="18" fill="#172333" stroke="#2A3A50"/>
+  <text x="114" y="236" fill="#E2E8F0" font-size="28" font-family="Arial, sans-serif" font-weight="700">1. 할인 이벤트</text>
+  <text x="114" y="274" fill="#CBD5E1" font-size="20" font-family="Arial, sans-serif">상품 할인율 변경</text>
+
+  <rect x="364" y="190" width="230" height="110" rx="18" fill="#172333" stroke="#2A3A50"/>
+  <text x="394" y="236" fill="#E2E8F0" font-size="28" font-family="Arial, sans-serif" font-weight="700">2. Candidate 저장</text>
+  <text x="394" y="274" fill="#CBD5E1" font-size="20" font-family="Arial, sans-serif">before / after 기록</text>
+
+  <rect x="644" y="190" width="230" height="110" rx="18" fill="#172333" stroke="#2A3A50"/>
+  <text x="674" y="236" fill="#E2E8F0" font-size="28" font-family="Arial, sans-serif" font-weight="700">3. 유저 락 획득</text>
+  <text x="674" y="274" fill="#CBD5E1" font-size="20" font-family="Arial, sans-serif">flarelane-dispatch-lock:{userId}</text>
+
+  <rect x="924" y="190" width="190" height="110" rx="18" fill="#142A22" stroke="#285942"/>
+  <text x="954" y="236" fill="#E2E8F0" font-size="28" font-family="Arial, sans-serif" font-weight="700">4. 발송</text>
+  <text x="954" y="274" fill="#CBD5E1" font-size="20" font-family="Arial, sans-serif">top 1 선택 후 푸시</text>
+
+  <path d="M314 245H364" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+  <path d="M594 245H644" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+  <path d="M874 245H924" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+
+  <rect x="144" y="420" width="320" height="170" rx="20" fill="#172333" stroke="#2A3A50"/>
+  <text x="176" y="470" fill="#E2E8F0" font-size="30" font-family="Arial, sans-serif" font-weight="700">락 획득 실패</text>
+  <text x="176" y="516" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">ResourceLockedError면 정상 경합으로 판단</text>
+  <text x="176" y="552" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">pending job 없으면 다음 발송 job 예약</text>
+
+  <rect x="536" y="420" width="520" height="170" rx="20" fill="#172333" stroke="#2A3A50"/>
+  <text x="568" y="470" fill="#E2E8F0" font-size="30" font-family="Arial, sans-serif" font-weight="700">발송 성공 후</text>
+  <text x="568" y="516" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">1) sent record 저장</text>
+  <text x="568" y="548" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">2) 이전 after 이상이면 중복 발송 신호로 Slack 알림</text>
+  <text x="568" y="580" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">3) 다음 후보가 있으면 3일 뒤 delayed job 예약</text>
+
+  <path d="M759 300V380" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+  <path d="M759 380H796" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+  <path d="M759 380H304" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="759" cy="380" r="7" fill="#64748B"/>
+</svg>
