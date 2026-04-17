@@ -1,9 +1,9 @@
 ---
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 import SiteLayout from './SiteLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
+import PostCover from '../components/PostCover.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -44,11 +44,9 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 				</div>
 			</header>
 
-			{heroImage && (
-				<div class="hero-image">
-					<Image width={1440} src={heroImage} alt={title} />
-				</div>
-			)}
+			<div class="hero-image">
+				{heroImage ? <img src={heroImage} alt={title} /> : <PostCover data={{ title, description, pubDate, updatedDate, category, tags, heroImage }} />}
+			</div>
 
 			<div class="article-grid">
 				<div class="prose"><slot /></div>
@@ -74,16 +72,16 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 
 <style>
 	.article-shell {
-		width: min(1120px, calc(100% - 32px));
+		width: min(1040px, calc(100% - 56px));
 		margin: 0 auto;
-		padding: 3rem 0 2.5rem;
+		padding: 2.6rem 0 2.2rem;
 	}
 	.article-card {
 		display: grid;
 		gap: 1.5rem;
 	}
 	.article-header {
-		max-width: 760px;
+		max-width: 680px;
 	}
 	.eyebrow,
 	.section-label {
@@ -96,13 +94,13 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 	}
 	h1 {
 		margin: 0;
-		font-size: clamp(2rem, 1.7rem + 1vw, 2.8rem);
+		font-size: clamp(1.72rem, 1.52rem + 0.7vw, 2.2rem);
 		line-height: 1.05;
 		letter-spacing: -0.02em;
 	}
 	.description {
 		margin: 0.9rem 0 0;
-		font-size: 0.98rem;
+		font-size: 0.9rem;
 		color: var(--text-muted);
 		line-height: 1.6;
 	}
@@ -132,15 +130,16 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 		background: rgba(255, 255, 255, 0.06);
 		font-size: 0.74rem;
 	}
-	.hero-image img {
+	.hero-image :global(img),
+	.hero-image :global(.generated-cover) {
 		width: 100%;
 		border-radius: 18px;
 		border: 1px solid rgba(255, 255, 255, 0.08);
 	}
 	.article-grid {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) 260px;
-		gap: 1.5rem;
+		grid-template-columns: minmax(0, 680px) 220px;
+		gap: 1.25rem;
 		align-items: start;
 	}
 	.prose {
