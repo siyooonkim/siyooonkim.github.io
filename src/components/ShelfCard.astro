@@ -1,0 +1,50 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+import PostCover from './PostCover.astro';
+
+interface Props {
+	post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+---
+
+<article class="shelf-card">
+	<a href={`/posts/${post.slug}/`} class="shelf-link">
+		<PostCover post={post} compact />
+		<div class="shelf-copy">
+			<h3>{post.data.title}</h3>
+			<p>{post.data.category}</p>
+			<span><FormattedDate date={post.data.pubDate} /></span>
+		</div>
+	</a>
+</article>
+
+<style>
+	.shelf-card {
+		min-width: 0;
+	}
+	.shelf-link {
+		display: grid;
+		gap: 0.75rem;
+		color: inherit;
+		text-decoration: none;
+	}
+	.shelf-copy {
+		display: grid;
+		gap: 0.28rem;
+	}
+	h3 {
+		margin: 0;
+		font-size: 0.92rem;
+		line-height: 1.45;
+		color: var(--text-strong);
+	}
+	p,
+	span {
+		margin: 0;
+		font-size: 0.74rem;
+		color: var(--text-subtle);
+	}
+</style>

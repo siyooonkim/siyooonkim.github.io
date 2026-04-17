@@ -1,0 +1,30 @@
+<svg width="1200" height="680" viewBox="0 0 1200 680" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="680" rx="28" fill="#0F1720"/>
+  <rect x="36" y="36" width="1128" height="608" rx="24" fill="#131D29" stroke="#243244"/>
+  <text x="72" y="108" fill="#F8FAFC" font-size="42" font-family="Arial, sans-serif" font-weight="700">락 범위 비교</text>
+  <text x="72" y="146" fill="#94A3B8" font-size="24" font-family="Arial, sans-serif">무엇을 보호하려는지에 따라 key 설계가 달라진다.</text>
+
+  <rect x="72" y="198" width="320" height="360" rx="20" fill="#172333" stroke="#2A3A50"/>
+  <text x="104" y="252" fill="#E2E8F0" font-size="30" font-family="Arial, sans-serif" font-weight="700">상품 단위 락</text>
+  <text x="104" y="296" fill="#93C5FD" font-size="22" font-family="monospace">flarelane-dispatch-lock:{productId}</text>
+  <text x="104" y="350" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">상품 A와 B는 서로 다른 락을 잡는다.</text>
+  <text x="104" y="390" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">같은 유저라도 상품이 다르면 동시에 진행된다.</text>
+  <text x="104" y="468" fill="#FCA5A5" font-size="30" font-family="Arial, sans-serif" font-weight="700">결과</text>
+  <text x="104" y="510" fill="#F8FAFC" font-size="22" font-family="Arial, sans-serif">같은 유저에게 중복 발송 가능</text>
+
+  <rect x="440" y="198" width="320" height="360" rx="20" fill="#172333" stroke="#2A3A50"/>
+  <text x="472" y="252" fill="#E2E8F0" font-size="30" font-family="Arial, sans-serif" font-weight="700">유저+상품 조합 락</text>
+  <text x="472" y="296" fill="#93C5FD" font-size="20" font-family="monospace">flarelane-dispatch-lock:{userId}:{productId}</text>
+  <text x="472" y="350" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">조합이 다르면 락이 분리된다.</text>
+  <text x="472" y="390" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">유저 단위 발송 제한을 보호하지 못한다.</text>
+  <text x="472" y="468" fill="#FCA5A5" font-size="30" font-family="Arial, sans-serif" font-weight="700">결과</text>
+  <text x="472" y="510" fill="#F8FAFC" font-size="22" font-family="Arial, sans-serif">중복 발송 위험은 그대로</text>
+
+  <rect x="808" y="198" width="320" height="360" rx="20" fill="#142A22" stroke="#285942"/>
+  <text x="840" y="252" fill="#E2E8F0" font-size="30" font-family="Arial, sans-serif" font-weight="700">유저 단위 락</text>
+  <text x="840" y="296" fill="#86EFAC" font-size="24" font-family="monospace">flarelane-dispatch-lock:{userId}</text>
+  <text x="840" y="350" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">한 유저에 대한 작업을 직렬화한다.</text>
+  <text x="840" y="390" fill="#CBD5E1" font-size="22" font-family="Arial, sans-serif">요구사항인 “유저당 3일 1건”과 정확히 맞는다.</text>
+  <text x="840" y="468" fill="#86EFAC" font-size="30" font-family="Arial, sans-serif" font-weight="700">결과</text>
+  <text x="840" y="510" fill="#F8FAFC" font-size="22" font-family="Arial, sans-serif">중복 발송을 가장 직접적으로 차단</text>
+</svg>

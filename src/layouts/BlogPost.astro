@@ -1,9 +1,9 @@
 ---
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 import SiteLayout from './SiteLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
+import PostCover from '../components/PostCover.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -44,11 +44,9 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 				</div>
 			</header>
 
-			{heroImage && (
-				<div class="hero-image">
-					<Image width={1440} src={heroImage} alt={title} />
-				</div>
-			)}
+			<div class="hero-image">
+				{heroImage ? <img src={heroImage} alt={title} /> : <PostCover data={{ title, description, pubDate, updatedDate, category, tags, heroImage }} />}
+			</div>
 
 			<div class="article-grid">
 				<div class="prose"><slot /></div>
@@ -74,38 +72,40 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 
 <style>
 	.article-shell {
-		width: min(1120px, calc(100% - 32px));
+		width: min(1040px, calc(100% - 56px));
 		margin: 0 auto;
-		padding: 4rem 0 3rem;
+		padding: 2.6rem 0 2.2rem;
 	}
 	.article-card {
 		display: grid;
-		gap: 2rem;
+		gap: 1.5rem;
 	}
 	.article-header {
-		max-width: 760px;
+		max-width: 680px;
 	}
 	.eyebrow,
 	.section-label {
 		margin: 0 0 1rem;
-		font-size: 0.85rem;
+		font-size: 0.72rem;
 		font-weight: 700;
-		letter-spacing: 0.12em;
+		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		color: var(--text-subtle);
 	}
 	h1 {
 		margin: 0;
-		font-size: clamp(2.9rem, 2.2rem + 2.1vw, 4.75rem);
+		font-size: clamp(1.72rem, 1.52rem + 0.7vw, 2.2rem);
 		line-height: 1.05;
+		letter-spacing: -0.02em;
 	}
 	.description {
-		margin: 1.25rem 0 0;
-		font-size: clamp(1.08rem, 1rem + 0.4vw, 1.35rem);
+		margin: 0.9rem 0 0;
+		font-size: 0.9rem;
 		color: var(--text-muted);
+		line-height: 1.6;
 	}
 	.meta-row {
-		margin-top: 1.5rem;
+		margin-top: 1.1rem;
 		display: flex;
 		gap: 1rem;
 		justify-content: space-between;
@@ -125,27 +125,28 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 		flex-wrap: wrap;
 	}
 	.tag-list li {
-		padding: 0.32rem 0.7rem;
+		padding: 0.24rem 0.56rem;
 		border-radius: 999px;
 		background: rgba(255, 255, 255, 0.06);
-		font-size: 0.84rem;
+		font-size: 0.74rem;
 	}
-	.hero-image img {
+	.hero-image :global(img),
+	.hero-image :global(.generated-cover) {
 		width: 100%;
-		border-radius: 28px;
+		border-radius: 18px;
 		border: 1px solid rgba(255, 255, 255, 0.08);
 	}
 	.article-grid {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) 260px;
-		gap: 2rem;
+		grid-template-columns: minmax(0, 680px) 220px;
+		gap: 1.25rem;
 		align-items: start;
 	}
 	.prose {
 		min-width: 0;
 	}
 	.related-posts {
-		padding-top: 1rem;
+		padding-top: 0.8rem;
 		border-top: 1px solid rgba(255, 255, 255, 0.08);
 	}
 	.related-grid {
@@ -156,16 +157,16 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 	.related-grid a {
 		display: grid;
 		gap: 0.5rem;
-		padding: 1rem 1.1rem;
-		border-radius: 18px;
-		background: rgba(255, 255, 255, 0.03);
+		padding: 0.85rem 0.95rem;
+		border-radius: 14px;
+		background: rgba(255, 255, 255, 0.02);
 		border: 1px solid rgba(255, 255, 255, 0.08);
 		text-decoration: none;
 		color: inherit;
 	}
 	.related-grid span {
 		color: var(--text-muted);
-		font-size: 0.96rem;
+		font-size: 0.88rem;
 	}
 	@media (max-width: 1040px) {
 		.article-grid {
