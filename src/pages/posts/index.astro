@@ -6,16 +6,32 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+// Group by category
+const categories = ['AI 관련', '딥러닝', '개발일지', '데이터베이스', '그냥저냥'];
+const groupedPosts = categories
+	.map((cat) => ({
+		category: cat,
+		posts: posts.filter((p) => p.data.category === cat),
+	}))
+	.filter((g) => g.posts.length > 0);
 ---
 
 <SiteLayout title="Posts" description="All posts">
 	<main class="posts-shell">
 		<section class="intro">
-			<p class="eyebrow">Posts</p>
-			<h1>Writing archive</h1>
-			<p>Long-form engineering essays, implementation notes, and decisions worth remembering.</p>
+			<h1>모든 글</h1>
+			<p>기록해둔 글들을 카테고리별로 모아봤습니다.</p>
 		</section>
-		<div class="posts-grid">
+
+		<nav class="filter-nav">
+			<a href="#all" class="filter-chip active">전체 ({posts.length})</a>
+			{groupedPosts.map((g) => (
+				<a href={`#cat-${g.category}`} class="filter-chip">{g.category} ({g.posts.length})</a>
+			))}
+		</nav>
+
+		<div class="posts-grid" id="all">
 			{posts.map((post, index) => <PostCard post={post} featured={index === 0} />)}
 		</div>
 	</main>
@@ -23,30 +39,49 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 
 <style>
 	.posts-shell {
-		width: min(1120px, calc(100% - 32px));
+		width: min(960px, calc(100% - 48px));
 		margin: 0 auto;
-		padding: 4rem 0 3rem;
+		padding: 2rem 0 3rem;
 	}
-	.eyebrow {
-		margin: 0 0 1rem;
-		font-size: 0.85rem;
-		font-weight: 700;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--text-subtle);
-	}
+
 	.intro {
-		max-width: 760px;
-		margin-bottom: 2rem;
+		margin-bottom: 1.5rem;
 	}
 	h1 {
+		margin: 0 0 0.5rem;
+		font-size: clamp(1.6rem, 1.4rem + 0.6vw, 2rem);
+	}
+	.intro p {
 		margin: 0;
-		font-size: clamp(2.8rem, 2.2rem + 2vw, 4.2rem);
-	}
-	.intro p:last-child {
 		color: var(--text-muted);
-		font-size: 1.1rem;
+		font-size: 0.88rem;
 	}
+
+	/* Filter Nav */
+	.filter-nav {
+		display: flex;
+		gap: 0.4rem;
+		flex-wrap: wrap;
+		margin-bottom: 1.5rem;
+		padding-bottom: 1rem;
+		border-bottom: 1px solid var(--line);
+	}
+	.filter-chip {
+		padding: 0.4rem 0.75rem;
+		border-radius: 6px;
+		background: transparent;
+		color: var(--text-muted);
+		text-decoration: none;
+		font-size: 0.78rem;
+		transition: all 160ms ease;
+	}
+	.filter-chip:hover,
+	.filter-chip.active {
+		background: rgba(255, 255, 255, 0.06);
+		color: var(--text-strong);
+	}
+
+	/* Grid */
 	.posts-grid {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -55,12 +90,16 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 	.posts-grid :global(.featured) {
 		grid-column: 1 / -1;
 	}
-	@media (max-width: 820px) {
+
+	@media (max-width: 720px) {
 		.posts-shell {
-			padding-top: 2.3rem;
+			width: min(960px, calc(100% - 32px));
 		}
 		.posts-grid {
 			grid-template-columns: 1fr;
+		}
+		.posts-grid :global(.featured) {
+			grid-column: 1;
 		}
 	}
 </style>

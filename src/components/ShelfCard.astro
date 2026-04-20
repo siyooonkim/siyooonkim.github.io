@@ -1,22 +1,50 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
-import PostCover from './PostCover.astro';
 
 interface Props {
 	post: CollectionEntry<'blog'>;
 }
 
 const { post } = Astro.props;
+
+// 카테고리별 색상 + 패턴 타입
+const categoryThemes: Record<string, { bg: string; accent: string; pattern: string }> = {
+	'AI 관련': { bg: '#1e3a3a', accent: '#4dd0e1', pattern: 'waves' },
+	'딥러닝': { bg: '#1a2f4a', accent: '#64b5f6', pattern: 'grid' },
+	'개발일지': { bg: '#2d3a4f', accent: '#90caf9', pattern: 'dots' },
+	'데이터베이스': { bg: '#3d2f45', accent: '#ce93d8', pattern: 'lines' },
+	'그냥저냥': { bg: '#3a3a2e', accent: '#dce775', pattern: 'circles' },
+};
+
+const theme = categoryThemes[post.data.category] || { bg: '#2a2a2a', accent: '#9ec5f8', pattern: 'dots' };
+const titleLines = post.data.title.split(' ');
+const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(' ');
+const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
 ---
 
 <article class="shelf-card">
 	<a href={`/posts/${post.slug}/`} class="shelf-link">
-		<PostCover post={post} compact />
-		<div class="shelf-copy">
+		<div class="book-cover" style={`--cover-bg: ${theme.bg}; --cover-accent: ${theme.accent}`} data-pattern={theme.pattern}>
+			{post.data.heroImage ? (
+				<img src={post.data.heroImage} alt={post.data.title} class="cover-image" />
+			) : (
+				<>
+					<div class="cover-decoration" data-pattern={theme.pattern}></div>
+					<div class="cover-panel">
+						<span class="panel-category">{post.data.category}</span>
+						<div class="panel-title">
+							<span>{firstLine}</span>
+							{secondLine && <span>{secondLine}</span>}
+						</div>
+					</div>
+					<div class="cover-author">Siyoon</div>
+				</>
+			)}
+		</div>
+		<div class="shelf-meta">
 			<h3>{post.data.title}</h3>
-			<p>{post.data.category}</p>
-			<span><FormattedDate date={post.data.pubDate} /></span>
+			<span class="date"><FormattedDate date={post.data.pubDate} /></span>
 		</div>
 	</a>
 </article>
@@ -27,24 +55,245 @@ const { post } = Astro.props;
 	}
 	.shelf-link {
 		display: grid;
-		gap: 0.75rem;
+		gap: 0.6rem;
 		color: inherit;
 		text-decoration: none;
 	}
-	.shelf-copy {
+	.shelf-link:hover h3 {
+		color: var(--accent);
+	}
+	.shelf-link:hover .book-cover {
+		transform: translateY(-4px);
+		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+	}
+
+	/* Book Cover */
+	.book-cover {
+		position: relative;
+		aspect-ratio: 3 / 4;
+		border-radius: 4px 12px 12px 4px;
+		overflow: hidden;
+		background: var(--cover-bg);
+		box-shadow:
+			0 4px 16px rgba(0, 0, 0, 0.3),
+			inset -2px 0 0 rgba(255, 255, 255, 0.05);
+		transition: transform 200ms ease, box-shadow 200ms ease;
+	}
+	.book-cover::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 12px;
+		background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent);
+		z-index: 10;
+	}
+
+	.cover-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* Decorations by pattern type */
+	.cover-decoration {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden;
+	}
+
+	/* Waves pattern */
+	.cover-decoration[data-pattern="waves"]::before {
+		content: '';
+		position: absolute;
+		bottom: -10%;
+		left: -20%;
+		width: 140%;
+		height: 50%;
+		background: var(--cover-accent);
+		opacity: 0.12;
+		border-radius: 50% 50% 0 0;
+	}
+	.cover-decoration[data-pattern="waves"]::after {
+		content: '';
+		position: absolute;
+		bottom: -20%;
+		right: -10%;
+		width: 100%;
+		height: 40%;
+		background: var(--cover-accent);
+		opacity: 0.08;
+		border-radius: 50% 50% 0 0;
+	}
+
+	/* Grid pattern */
+	.cover-decoration[data-pattern="grid"]::before {
+		content: '';
+		position: absolute;
+		top: 5%;
+		right: 5%;
+		width: 40%;
+		height: 30%;
+		background-image:
+			linear-gradient(var(--cover-accent) 1px, transparent 1px),
+			linear-gradient(90deg, var(--cover-accent) 1px, transparent 1px);
+		background-size: 12px 12px;
+		opacity: 0.2;
+	}
+	.cover-decoration[data-pattern="grid"]::after {
+		content: '';
+		position: absolute;
+		bottom: 10%;
+		left: 8%;
+		width: 20px;
+		height: 20px;
+		border: 2px solid var(--cover-accent);
+		opacity: 0.3;
+	}
+
+	/* Dots pattern */
+	.cover-decoration[data-pattern="dots"]::before {
+		content: '';
+		position: absolute;
+		top: -15%;
+		right: -25%;
+		width: 70%;
+		height: 50%;
+		border-radius: 50%;
+		background: var(--cover-accent);
+		opacity: 0.12;
+	}
+	.cover-decoration[data-pattern="dots"]::after {
+		content: '';
+		position: absolute;
+		bottom: 12%;
+		left: 8%;
+		width: 32px;
+		height: 32px;
+		background-image: radial-gradient(var(--cover-accent) 2px, transparent 2px);
+		background-size: 8px 8px;
+		opacity: 0.35;
+	}
+
+	/* Lines pattern */
+	.cover-decoration[data-pattern="lines"]::before {
+		content: '';
+		position: absolute;
+		top: 8%;
+		right: 8%;
+		width: 35%;
+		height: 25%;
+		background-image: repeating-linear-gradient(
+			-45deg,
+			var(--cover-accent) 0,
+			var(--cover-accent) 1px,
+			transparent 1px,
+			transparent 8px
+		);
+		opacity: 0.25;
+	}
+	.cover-decoration[data-pattern="lines"]::after {
+		content: '';
+		position: absolute;
+		bottom: 15%;
+		left: 10%;
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		background: var(--cover-accent);
+		opacity: 0.2;
+	}
+
+	/* Circles pattern */
+	.cover-decoration[data-pattern="circles"]::before {
+		content: '';
+		position: absolute;
+		top: 10%;
+		right: 10%;
+		width: 50px;
+		height: 50px;
+		border: 2px solid var(--cover-accent);
+		border-radius: 50%;
+		opacity: 0.25;
+	}
+	.cover-decoration[data-pattern="circles"]::after {
+		content: '';
+		position: absolute;
+		bottom: 20%;
+		left: 15%;
+		width: 30px;
+		height: 30px;
+		border: 2px solid var(--cover-accent);
+		border-radius: 50%;
+		opacity: 0.2;
+	}
+
+	/* Panel (white card inside) */
+	.cover-panel {
+		position: absolute;
+		left: 12%;
+		right: 12%;
+		top: 18%;
+		bottom: 22%;
+		background: #fafafa;
+		border-radius: 2px;
+		padding: 0.8rem;
+		display: flex;
+		flex-direction: column;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+	.panel-category {
+		font-size: 0.55rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: #666;
+		margin-bottom: auto;
+	}
+	.panel-title {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		font-size: 0.78rem;
+		font-weight: 700;
+		line-height: 1.3;
+		color: #1a1a1a;
+		word-break: keep-all;
+	}
+
+	/* Author */
+	.cover-author {
+		position: absolute;
+		bottom: 8%;
+		left: 12%;
+		font-size: 0.65rem;
+		color: rgba(255, 255, 255, 0.7);
+		font-weight: 500;
+	}
+
+	/* Meta */
+	.shelf-meta {
 		display: grid;
-		gap: 0.28rem;
+		gap: 0.2rem;
 	}
 	h3 {
 		margin: 0;
-		font-size: 0.92rem;
-		line-height: 1.45;
+		font-size: 0.82rem;
+		font-weight: 600;
+		line-height: 1.4;
 		color: var(--text-strong);
+		transition: color 160ms ease;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
-	p,
-	span {
-		margin: 0;
-		font-size: 0.74rem;
+	.date {
+		font-size: 0.7rem;
 		color: var(--text-subtle);
 	}
 </style>

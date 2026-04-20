@@ -2,7 +2,7 @@
 title: '오늘 했던 그 redis 분산락 적용'
 description: '요구사항 하나 때문에 락 범위, TTL, 예외 분리까지 다시 보게 된 작업 기록입니다.'
 pubDate: '2026-04-17'
-category: '개발 일지'
+category: '개발일지'
 tags: ['redis', 'distributed-lock', 'nestjs', 'devlog']
 draft: false
 ---

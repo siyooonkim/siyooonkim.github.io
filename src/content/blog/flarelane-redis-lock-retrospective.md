@@ -2,7 +2,7 @@
 title: 'MSA 환경에서 CRM 푸시 알림 개선 삽질기 — Redis, Bull Queue, 분산 락과 씨름한 기록'
 description: '하루 1건, 3일 1회, 가장 임팩트 큰 할인만 보내야 한다는 요구사항을 Redis, Bull Queue, 분산 락으로 풀어낸 과정을 정리했습니다.'
 pubDate: '2026-04-17'
-category: '개발 일지'
+category: '개발일지'
 tags: ['nestjs', 'redis', 'bull-queue', 'distributed-lock', 'msa', 'crm']
 draft: false
 ---

@@ -16,24 +16,41 @@ if (!source) {
 	throw new Error('PostCover requires either post or data.');
 }
 
-const titleWords = source.title.split(' ').slice(0, 5).join(' ');
+// 카테고리별 색상 + 패턴 타입
+const categoryThemes: Record<string, { bg: string; accent: string; pattern: string }> = {
+	'AI 관련': { bg: '#1e3a3a', accent: '#4dd0e1', pattern: 'waves' },
+	'딥러닝': { bg: '#1a2f4a', accent: '#64b5f6', pattern: 'grid' },
+	'개발일지': { bg: '#2d3a4f', accent: '#90caf9', pattern: 'dots' },
+	'데이터베이스': { bg: '#3d2f45', accent: '#ce93d8', pattern: 'lines' },
+	'그냥저냥': { bg: '#3a3a2e', accent: '#dce775', pattern: 'circles' },
+};
+
+const theme = categoryThemes[source.category] || { bg: '#2a2a2a', accent: '#9ec5f8', pattern: 'dots' };
+const titleLines = source.title.split(' ');
+const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(' ');
+const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
 const publishedYear = source.pubDate instanceof Date ? source.pubDate.getFullYear() : new Date(source.pubDate).getFullYear();
 ---
 
 {
 	source.heroImage ? (
 		<img
-			class="cover-image"
+			class:list={["cover-image", { compact }]}
 			src={source.heroImage}
 			alt={source.title}
 		/>
 	) : (
-		<div class:list={["generated-cover", { compact }]}>
-			<div class="generated-cover__panel">
-				<p class="generated-cover__category">{source.category}</p>
-				<h4>{titleWords}</h4>
-				<span>{publishedYear}</span>
+		<div class:list={["book-cover", { compact }]} style={`--cover-bg: ${theme.bg}; --cover-accent: ${theme.accent}`} data-pattern={theme.pattern}>
+			<div class="cover-decoration" data-pattern={theme.pattern}></div>
+			<div class="cover-panel">
+				<span class="panel-category">{source.category}</span>
+				<div class="panel-title">
+					<span>{firstLine}</span>
+					{secondLine && <span>{secondLine}</span>}
+				</div>
+				<span class="panel-year">{publishedYear}</span>
 			</div>
+			<div class="cover-author">Siyoon</div>
 		</div>
 	)
 }
@@ -42,51 +59,243 @@ const publishedYear = source.pubDate instanceof Date ? source.pubDate.getFullYea
 	.cover-image {
 		width: 100%;
 		height: auto;
-		aspect-ratio: 16 / 10;
+		aspect-ratio: 16 / 9;
 		object-fit: cover;
+		border-radius: 0;
 	}
-	.generated-cover {
+	.cover-image.compact {
+		aspect-ratio: 3 / 4;
+	}
+
+	/* Book Cover */
+	.book-cover {
 		position: relative;
-		aspect-ratio: 16 / 10;
+		aspect-ratio: 16 / 9;
 		overflow: hidden;
-		background:
-			linear-gradient(180deg, #171d25 0%, #131921 100%);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		background: var(--cover-bg);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 	}
-	.generated-cover.compact {
-		aspect-ratio: 4 / 5;
+	.book-cover.compact {
+		aspect-ratio: 3 / 4;
+		border-radius: 4px 12px 12px 4px;
+		box-shadow:
+			0 4px 16px rgba(0, 0, 0, 0.3),
+			inset -2px 0 0 rgba(255, 255, 255, 0.05);
 	}
-	.generated-cover__panel {
+	.book-cover.compact::before {
+		content: '';
 		position: absolute;
-		left: 9%;
-		right: 9%;
-		top: 12%;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 12px;
+		background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent);
+		z-index: 10;
+	}
+
+	/* Decorations */
+	.cover-decoration {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden;
+	}
+
+	/* Waves */
+	.cover-decoration[data-pattern="waves"]::before {
+		content: '';
+		position: absolute;
+		bottom: -10%;
+		left: -20%;
+		width: 140%;
+		height: 50%;
+		background: var(--cover-accent);
+		opacity: 0.12;
+		border-radius: 50% 50% 0 0;
+	}
+	.cover-decoration[data-pattern="waves"]::after {
+		content: '';
+		position: absolute;
+		bottom: -20%;
+		right: -10%;
+		width: 100%;
+		height: 40%;
+		background: var(--cover-accent);
+		opacity: 0.08;
+		border-radius: 50% 50% 0 0;
+	}
+
+	/* Grid */
+	.cover-decoration[data-pattern="grid"]::before {
+		content: '';
+		position: absolute;
+		top: 5%;
+		right: 5%;
+		width: 40%;
+		height: 35%;
+		background-image:
+			linear-gradient(var(--cover-accent) 1px, transparent 1px),
+			linear-gradient(90deg, var(--cover-accent) 1px, transparent 1px);
+		background-size: 14px 14px;
+		opacity: 0.2;
+	}
+	.cover-decoration[data-pattern="grid"]::after {
+		content: '';
+		position: absolute;
 		bottom: 12%;
-		padding: 1rem 0.95rem;
+		left: 8%;
+		width: 24px;
+		height: 24px;
+		border: 2px solid var(--cover-accent);
+		opacity: 0.3;
+	}
+
+	/* Dots */
+	.cover-decoration[data-pattern="dots"]::before {
+		content: '';
+		position: absolute;
+		top: -15%;
+		right: -20%;
+		width: 60%;
+		height: 70%;
+		border-radius: 50%;
+		background: var(--cover-accent);
+		opacity: 0.12;
+	}
+	.cover-decoration[data-pattern="dots"]::after {
+		content: '';
+		position: absolute;
+		bottom: 15%;
+		left: 8%;
+		width: 40px;
+		height: 40px;
+		background-image: radial-gradient(var(--cover-accent) 2px, transparent 2px);
+		background-size: 10px 10px;
+		opacity: 0.35;
+	}
+
+	/* Lines */
+	.cover-decoration[data-pattern="lines"]::before {
+		content: '';
+		position: absolute;
+		top: 8%;
+		right: 8%;
+		width: 35%;
+		height: 30%;
+		background-image: repeating-linear-gradient(
+			-45deg,
+			var(--cover-accent) 0,
+			var(--cover-accent) 1px,
+			transparent 1px,
+			transparent 10px
+		);
+		opacity: 0.25;
+	}
+	.cover-decoration[data-pattern="lines"]::after {
+		content: '';
+		position: absolute;
+		bottom: 15%;
+		left: 10%;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background: var(--cover-accent);
+		opacity: 0.2;
+	}
+
+	/* Circles */
+	.cover-decoration[data-pattern="circles"]::before {
+		content: '';
+		position: absolute;
+		top: 10%;
+		right: 12%;
+		width: 60px;
+		height: 60px;
+		border: 2px solid var(--cover-accent);
+		border-radius: 50%;
+		opacity: 0.25;
+	}
+	.cover-decoration[data-pattern="circles"]::after {
+		content: '';
+		position: absolute;
+		bottom: 18%;
+		left: 15%;
+		width: 36px;
+		height: 36px;
+		border: 2px solid var(--cover-accent);
+		border-radius: 50%;
+		opacity: 0.2;
+	}
+
+	/* Panel */
+	.cover-panel {
+		position: absolute;
+		left: 10%;
+		right: 10%;
+		top: 15%;
+		bottom: 20%;
+		background: #fafafa;
+		border-radius: 3px;
+		padding: 1.2rem;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-		background: #f4f5f7;
-		color: #141a21;
-		border-radius: 2px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	}
-	.generated-cover__category {
-		margin: 0;
-		font-size: 0.62rem;
-		letter-spacing: 0.08em;
+	.book-cover.compact .cover-panel {
+		left: 12%;
+		right: 12%;
+		top: 18%;
+		bottom: 22%;
+		padding: 0.8rem;
+	}
+	.panel-category {
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
 		text-transform: uppercase;
-		color: #475569;
+		color: #666;
 	}
-	h4 {
-		margin: 0;
-		font-size: clamp(0.9rem, 0.84rem + 0.22vw, 1.05rem);
-		line-height: 1.45;
-		color: #0f172a;
+	.book-cover.compact .panel-category {
+		font-size: 0.55rem;
+	}
+	.panel-title {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.2rem;
+		font-size: clamp(1rem, 0.9rem + 0.4vw, 1.3rem);
 		font-weight: 700;
-		letter-spacing: -0.01em;
+		line-height: 1.3;
+		color: #1a1a1a;
+		word-break: keep-all;
 	}
-	span {
-		font-size: 0.72rem;
-		color: #475569;
+	.book-cover.compact .panel-title {
+		font-size: 0.78rem;
+		gap: 0.15rem;
+	}
+	.panel-year {
+		font-size: 0.7rem;
+		color: #888;
+	}
+	.book-cover.compact .panel-year {
+		font-size: 0.6rem;
+	}
+
+	/* Author */
+	.cover-author {
+		position: absolute;
+		bottom: 6%;
+		left: 10%;
+		font-size: 0.75rem;
+		color: rgba(255, 255, 255, 0.7);
+		font-weight: 500;
+	}
+	.book-cover.compact .cover-author {
+		left: 12%;
+		bottom: 8%;
+		font-size: 0.65rem;
 	}
 </style>

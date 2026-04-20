@@ -72,7 +72,7 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 
 <style>
 	.article-shell {
-		width: min(1040px, calc(100% - 56px));
+		width: min(1080px, calc(100% - 96px));
 		margin: 0 auto;
 		padding: 2.6rem 0 2.2rem;
 	}
@@ -138,8 +138,8 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 	}
 	.article-grid {
 		display: grid;
-		grid-template-columns: minmax(0, 680px) 220px;
-		gap: 1.25rem;
+		grid-template-columns: minmax(0, 720px) 220px;
+		gap: 1.6rem;
 		align-items: start;
 	}
 	.prose {
@@ -175,6 +175,7 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 	}
 	@media (max-width: 720px) {
 		.article-shell {
+			width: min(1080px, calc(100% - 40px));
 			padding-top: 2.2rem;
 		}
 		.related-grid {

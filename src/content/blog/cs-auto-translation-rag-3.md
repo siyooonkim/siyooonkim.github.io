@@ -2,7 +2,7 @@
 title: 'CS 자동 번역 응답 시스템 만들기 (3) - 운영 이슈'
 description: '실서비스에 붙였을 때 생기는 실패 케이스와 사람 검수 흐름을 정리하려는 글의 초안입니다.'
 pubDate: '2026-04-11'
-category: '개발 일지'
+category: '개발일지'
 tags: ['rag', 'operations', 'quality-control', 'llm']
 draft: false
 ---

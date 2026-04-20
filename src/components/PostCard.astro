@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets';
 import FormattedDate from './FormattedDate.astro';
 
 interface Props {
@@ -9,21 +8,52 @@ interface Props {
 }
 
 const { post, featured = false } = Astro.props;
+
+// 카테고리별 색상 + 패턴 타입
+const categoryThemes: Record<string, { bg: string; accent: string; pattern: string }> = {
+	'AI 관련': { bg: '#1e3a3a', accent: '#4dd0e1', pattern: 'waves' },
+	'딥러닝': { bg: '#1a2f4a', accent: '#64b5f6', pattern: 'grid' },
+	'개발일지': { bg: '#2d3a4f', accent: '#90caf9', pattern: 'dots' },
+	'데이터베이스': { bg: '#3d2f45', accent: '#ce93d8', pattern: 'lines' },
+	'그냥저냥': { bg: '#3a3a2e', accent: '#dce775', pattern: 'circles' },
+};
+
+const theme = categoryThemes[post.data.category] || { bg: '#2a2a2a', accent: '#9ec5f8', pattern: 'dots' };
+const titleLines = post.data.title.split(' ');
+const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(' ');
+const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
 ---
 
-<article class:list={["post-card", { featured }] }>
+<article class:list={["post-card", { featured }]}>
 	<a href={`/posts/${post.slug}/`} class="card-link">
-		{post.data.heroImage && (
-			<Image src={post.data.heroImage} alt={post.data.title} widths={[720, 1200]} sizes="(max-width: 960px) 100vw, 720px" />
-		)}
-		<div class="card-copy">
-			<p class="card-date"><FormattedDate date={post.data.pubDate} /></p>
-			<p class="card-category">{post.data.category}</p>
+		<div class="book-cover" style={`--cover-bg: ${theme.bg}; --cover-accent: ${theme.accent}`} data-pattern={theme.pattern}>
+			{post.data.heroImage ? (
+				<img src={post.data.heroImage} alt={post.data.title} class="cover-image" />
+			) : (
+				<>
+					<div class="cover-decoration" data-pattern={theme.pattern}></div>
+					<div class="cover-panel">
+						<span class="panel-category">{post.data.category}</span>
+						<div class="panel-title">
+							<span>{firstLine}</span>
+							{secondLine && <span>{secondLine}</span>}
+						</div>
+					</div>
+					<div class="cover-author">Siyoon</div>
+				</>
+			)}
+		</div>
+		<div class="card-body">
+			<div class="card-meta">
+				<span class="category">{post.data.category}</span>
+				<span class="dot">·</span>
+				<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+			</div>
 			<h3>{post.data.title}</h3>
-			<p class="card-description">{post.data.description}</p>
+			<p class="description">{post.data.description}</p>
 			{post.data.tags.length > 0 && (
-				<ul class="tag-row" aria-label="Tags">
-					{post.data.tags.map((tag: string) => <li>{tag}</li>)}
+				<ul class="tags">
+					{post.data.tags.slice(0, 3).map((tag: string) => <li>{tag}</li>)}
 				</ul>
 			)}
 		</div>
@@ -32,72 +62,308 @@ const { post, featured = false } = Astro.props;
 
 <style>
 	.post-card {
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		border-radius: 18px;
+		border-radius: 12px;
 		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid rgba(255, 255, 255, 0.06);
 		overflow: hidden;
-		transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+		transition: all 180ms ease;
 	}
 	.post-card:hover {
 		transform: translateY(-2px);
-		border-color: rgba(255, 255, 255, 0.14);
-		background: rgba(255, 255, 255, 0.035);
+		border-color: rgba(255, 255, 255, 0.12);
+		background: rgba(255, 255, 255, 0.04);
 	}
 	.card-link {
 		display: grid;
+		grid-template-columns: 140px 1fr;
+		gap: 1rem;
 		color: inherit;
 		text-decoration: none;
-	}
-	img {
-		width: 100%;
-		height: auto;
-		aspect-ratio: 16 / 9;
-		object-fit: cover;
-		border-radius: 0;
-	}
-	.card-copy {
 		padding: 1rem;
 	}
-	.card-date {
-		margin: 0 0 0.45rem;
-		font-size: 0.78rem;
+	.post-card.featured .card-link {
+		grid-template-columns: 180px 1fr;
+	}
+
+	/* Book Cover */
+	.book-cover {
+		position: relative;
+		aspect-ratio: 3 / 4;
+		border-radius: 4px 10px 10px 4px;
+		overflow: hidden;
+		background: var(--cover-bg);
+		box-shadow:
+			0 4px 12px rgba(0, 0, 0, 0.25),
+			inset -2px 0 0 rgba(255, 255, 255, 0.05);
+		flex-shrink: 0;
+	}
+	.book-cover::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 10px;
+		background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent);
+		z-index: 10;
+	}
+	.cover-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* Decorations */
+	.cover-decoration {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden;
+	}
+
+	/* Waves */
+	.cover-decoration[data-pattern="waves"]::before {
+		content: '';
+		position: absolute;
+		bottom: -10%;
+		left: -20%;
+		width: 140%;
+		height: 50%;
+		background: var(--cover-accent);
+		opacity: 0.12;
+		border-radius: 50% 50% 0 0;
+	}
+	.cover-decoration[data-pattern="waves"]::after {
+		content: '';
+		position: absolute;
+		bottom: -20%;
+		right: -10%;
+		width: 100%;
+		height: 40%;
+		background: var(--cover-accent);
+		opacity: 0.08;
+		border-radius: 50% 50% 0 0;
+	}
+
+	/* Grid */
+	.cover-decoration[data-pattern="grid"]::before {
+		content: '';
+		position: absolute;
+		top: 5%;
+		right: 5%;
+		width: 40%;
+		height: 30%;
+		background-image:
+			linear-gradient(var(--cover-accent) 1px, transparent 1px),
+			linear-gradient(90deg, var(--cover-accent) 1px, transparent 1px);
+		background-size: 10px 10px;
+		opacity: 0.2;
+	}
+	.cover-decoration[data-pattern="grid"]::after {
+		content: '';
+		position: absolute;
+		bottom: 10%;
+		left: 8%;
+		width: 16px;
+		height: 16px;
+		border: 2px solid var(--cover-accent);
+		opacity: 0.3;
+	}
+
+	/* Dots */
+	.cover-decoration[data-pattern="dots"]::before {
+		content: '';
+		position: absolute;
+		top: -15%;
+		right: -25%;
+		width: 70%;
+		height: 50%;
+		border-radius: 50%;
+		background: var(--cover-accent);
+		opacity: 0.12;
+	}
+	.cover-decoration[data-pattern="dots"]::after {
+		content: '';
+		position: absolute;
+		bottom: 12%;
+		left: 8%;
+		width: 24px;
+		height: 24px;
+		background-image: radial-gradient(var(--cover-accent) 2px, transparent 2px);
+		background-size: 6px 6px;
+		opacity: 0.35;
+	}
+
+	/* Lines */
+	.cover-decoration[data-pattern="lines"]::before {
+		content: '';
+		position: absolute;
+		top: 8%;
+		right: 8%;
+		width: 35%;
+		height: 25%;
+		background-image: repeating-linear-gradient(
+			-45deg,
+			var(--cover-accent) 0,
+			var(--cover-accent) 1px,
+			transparent 1px,
+			transparent 8px
+		);
+		opacity: 0.25;
+	}
+	.cover-decoration[data-pattern="lines"]::after {
+		content: '';
+		position: absolute;
+		bottom: 15%;
+		left: 10%;
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		background: var(--cover-accent);
+		opacity: 0.2;
+	}
+
+	/* Circles */
+	.cover-decoration[data-pattern="circles"]::before {
+		content: '';
+		position: absolute;
+		top: 10%;
+		right: 10%;
+		width: 40px;
+		height: 40px;
+		border: 2px solid var(--cover-accent);
+		border-radius: 50%;
+		opacity: 0.25;
+	}
+	.cover-decoration[data-pattern="circles"]::after {
+		content: '';
+		position: absolute;
+		bottom: 20%;
+		left: 15%;
+		width: 24px;
+		height: 24px;
+		border: 2px solid var(--cover-accent);
+		border-radius: 50%;
+		opacity: 0.2;
+	}
+
+	/* Panel */
+	.cover-panel {
+		position: absolute;
+		left: 12%;
+		right: 12%;
+		top: 18%;
+		bottom: 22%;
+		background: #fafafa;
+		border-radius: 2px;
+		padding: 0.6rem;
+		display: flex;
+		flex-direction: column;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+	}
+	.panel-category {
+		font-size: 0.5rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		color: #666;
+		margin-bottom: auto;
+	}
+	.panel-title {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		font-size: 0.68rem;
+		font-weight: 700;
+		line-height: 1.3;
+		color: #1a1a1a;
+		word-break: keep-all;
+	}
+	.cover-author {
+		position: absolute;
+		bottom: 8%;
+		left: 12%;
+		font-size: 0.55rem;
+		color: rgba(255, 255, 255, 0.7);
+		font-weight: 500;
+	}
+
+	/* Card Body */
+	.card-body {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		min-width: 0;
+	}
+	.card-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-bottom: 0.4rem;
+		font-size: 0.72rem;
 		color: var(--text-subtle);
 	}
-	.card-category {
-		margin: 0 0 0.45rem;
-		font-size: 0.7rem;
-		font-weight: 700;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
+	.category {
 		color: var(--accent);
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+	.dot {
+		opacity: 0.5;
 	}
 	h3 {
 		margin: 0;
-		font-size: clamp(1rem, 0.94rem + 0.25vw, 1.18rem);
-		line-height: 1.28;
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.35;
+		color: var(--text-strong);
 	}
-	.card-description {
-		margin: 0.55rem 0 0;
-		color: var(--text-muted);
-		font-size: 0.88rem;
+	.post-card.featured h3 {
+		font-size: 1.15rem;
+	}
+	.description {
+		margin: 0.4rem 0 0;
+		font-size: 0.85rem;
 		line-height: 1.5;
+		color: var(--text-muted);
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
-	.tag-row {
+	.tags {
 		list-style: none;
 		display: flex;
 		gap: 0.35rem;
 		padding: 0;
-		margin: 0.8rem 0 0;
+		margin: 0.6rem 0 0;
 		flex-wrap: wrap;
 	}
-	.tag-row li {
-		padding: 0.22rem 0.48rem;
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.06);
+	.tags li {
+		padding: 0.18rem 0.45rem;
+		border-radius: 4px;
+		background: rgba(255, 255, 255, 0.05);
 		color: var(--text-subtle);
-		font-size: 0.72rem;
+		font-size: 0.68rem;
 	}
-	.post-card.featured h3 {
-		font-size: clamp(1.25rem, 1.1rem + 0.55vw, 1.55rem);
+
+	@media (max-width: 600px) {
+		.card-link {
+			grid-template-columns: 100px 1fr;
+			gap: 0.8rem;
+			padding: 0.8rem;
+		}
+		.post-card.featured .card-link {
+			grid-template-columns: 120px 1fr;
+		}
+		h3 {
+			font-size: 0.9rem;
+		}
+		.description {
+			font-size: 0.8rem;
+		}
 	}
 </style>
