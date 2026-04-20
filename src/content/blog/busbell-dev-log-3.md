@@ -6,7 +6,6 @@ updatedDate: '2025-09-13'
 category: '개발일지'
 tags: ['project', 'busbell', 'backend', 'nestjs', 'fcm', 'adapter-pattern']
 draft: false
-heroImage: '/images/posts/busbell-3/cover.png'
 ---
 
 # '버스벨' 개발 (3) _ 백엔드 개발

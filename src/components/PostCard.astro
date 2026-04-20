@@ -8,19 +8,41 @@ interface Props {
 }
 
 const { post, featured = false } = Astro.props;
-const titleWords = post.data.title.split(' ').slice(0, 6).join(' ');
+
+// 카테고리별 색상 테마
+const categoryThemes: Record<string, { bg: string; accent: string }> = {
+	'AI 관련': { bg: '#1a3a4a', accent: '#4dd0e1' },
+	'개발일지': { bg: '#2d3a4f', accent: '#90caf9' },
+	'데이터베이스': { bg: '#3d2f45', accent: '#ce93d8' },
+	'기타': { bg: '#3a3a2e', accent: '#dce775' },
+};
+
+const theme = categoryThemes[post.data.category] || { bg: '#2a2a2a', accent: '#9ec5f8' };
+const titleLines = post.data.title.split(' ');
+const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(' ');
+const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
 ---
 
 <article class:list={["post-card", { featured }]}>
 	<a href={`/posts/${post.slug}/`} class="card-link">
-		<div class="card-cover">
+		<div class="book-cover" style={`--cover-bg: ${theme.bg}; --cover-accent: ${theme.accent}`}>
 			{post.data.heroImage ? (
-				<img src={post.data.heroImage} alt={post.data.title} />
+				<img src={post.data.heroImage} alt={post.data.title} class="cover-image" />
 			) : (
-				<div class="generated-cover">
-					<span class="cover-category">{post.data.category}</span>
-					<p class="cover-title">{titleWords}</p>
-				</div>
+				<>
+					<div class="cover-decoration">
+						<div class="deco-circle"></div>
+						<div class="deco-dots"></div>
+					</div>
+					<div class="cover-panel">
+						<span class="panel-category">{post.data.category}</span>
+						<div class="panel-title">
+							<span>{firstLine}</span>
+							{secondLine && <span>{secondLine}</span>}
+						</div>
+					</div>
+					<div class="cover-author">Siyoon</div>
+				</>
 			)}
 		</div>
 		<div class="card-body">
@@ -55,60 +77,127 @@ const titleWords = post.data.title.split(' ').slice(0, 6).join(' ');
 	}
 	.card-link {
 		display: grid;
+		grid-template-columns: 140px 1fr;
+		gap: 1rem;
 		color: inherit;
 		text-decoration: none;
+		padding: 1rem;
+	}
+	.post-card.featured .card-link {
+		grid-template-columns: 180px 1fr;
 	}
 
-	/* Card Cover */
-	.card-cover {
-		aspect-ratio: 16 / 9;
+	/* Book Cover */
+	.book-cover {
+		position: relative;
+		aspect-ratio: 3 / 4;
+		border-radius: 4px 10px 10px 4px;
 		overflow: hidden;
-		background: var(--bg-elevated);
+		background: var(--cover-bg);
+		box-shadow:
+			0 4px 12px rgba(0, 0, 0, 0.25),
+			inset -2px 0 0 rgba(255, 255, 255, 0.05);
+		flex-shrink: 0;
 	}
-	.post-card:not(.featured) .card-cover {
-		aspect-ratio: 4 / 3;
+	.book-cover::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 10px;
+		background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent);
+		z-index: 10;
 	}
-	.card-cover img {
+	.cover-image {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 	}
 
-	/* Generated Cover */
-	.generated-cover {
-		width: 100%;
-		height: 100%;
-		padding: 1.2rem;
+	/* Decoration */
+	.cover-decoration {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden;
+	}
+	.deco-circle {
+		position: absolute;
+		top: -20%;
+		right: -30%;
+		width: 80%;
+		height: 60%;
+		border-radius: 50%;
+		background: var(--cover-accent);
+		opacity: 0.15;
+	}
+	.deco-dots {
+		position: absolute;
+		bottom: 15%;
+		left: 10%;
+		width: 24px;
+		height: 24px;
+		background-image: radial-gradient(var(--cover-accent) 2px, transparent 2px);
+		background-size: 6px 6px;
+		opacity: 0.4;
+	}
+
+	/* Panel */
+	.cover-panel {
+		position: absolute;
+		left: 12%;
+		right: 12%;
+		top: 18%;
+		bottom: 22%;
+		background: #fafafa;
+		border-radius: 2px;
+		padding: 0.6rem;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-		background: linear-gradient(145deg, #1a1f28 0%, #141921 100%);
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 	}
-	.cover-category {
-		font-size: 0.65rem;
+	.panel-category {
+		font-size: 0.5rem;
 		font-weight: 600;
-		letter-spacing: 0.06em;
+		letter-spacing: 0.05em;
 		text-transform: uppercase;
-		color: var(--accent);
-		opacity: 0.8;
+		color: #666;
+		margin-bottom: auto;
 	}
-	.cover-title {
-		margin: 0;
-		font-size: 0.95rem;
-		font-weight: 600;
-		line-height: 1.4;
-		color: var(--text-strong);
+	.panel-title {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		font-size: 0.68rem;
+		font-weight: 700;
+		line-height: 1.3;
+		color: #1a1a1a;
+		word-break: keep-all;
+	}
+	.cover-author {
+		position: absolute;
+		bottom: 8%;
+		left: 12%;
+		font-size: 0.55rem;
+		color: rgba(255, 255, 255, 0.7);
+		font-weight: 500;
 	}
 
 	/* Card Body */
 	.card-body {
-		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		min-width: 0;
 	}
 	.card-meta {
 		display: flex;
 		align-items: center;
 		gap: 0.4rem;
-		margin-bottom: 0.5rem;
+		margin-bottom: 0.4rem;
 		font-size: 0.72rem;
 		color: var(--text-subtle);
 	}
@@ -129,10 +218,10 @@ const titleWords = post.data.title.split(' ').slice(0, 6).join(' ');
 		color: var(--text-strong);
 	}
 	.post-card.featured h3 {
-		font-size: 1.2rem;
+		font-size: 1.15rem;
 	}
 	.description {
-		margin: 0.5rem 0 0;
+		margin: 0.4rem 0 0;
 		font-size: 0.85rem;
 		line-height: 1.5;
 		color: var(--text-muted);
@@ -141,14 +230,12 @@ const titleWords = post.data.title.split(' ').slice(0, 6).join(' ');
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
-
-	/* Tags */
 	.tags {
 		list-style: none;
 		display: flex;
 		gap: 0.35rem;
 		padding: 0;
-		margin: 0.7rem 0 0;
+		margin: 0.6rem 0 0;
 		flex-wrap: wrap;
 	}
 	.tags li {
@@ -157,5 +244,23 @@ const titleWords = post.data.title.split(' ').slice(0, 6).join(' ');
 		background: rgba(255, 255, 255, 0.05);
 		color: var(--text-subtle);
 		font-size: 0.68rem;
+	}
+
+	@media (max-width: 600px) {
+		.card-link {
+			grid-template-columns: 100px 1fr;
+			gap: 0.8rem;
+			padding: 0.8rem;
+		}
+		.post-card.featured .card-link {
+			grid-template-columns: 120px 1fr;
+		}
+		h3 {
+			font-size: 0.9rem;
+		}
+		.description {
+			font-size: 0.8rem;
+			-webkit-line-clamp: 2;
+		}
 	}
 </style>

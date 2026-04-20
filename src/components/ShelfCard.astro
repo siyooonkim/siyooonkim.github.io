@@ -7,19 +7,41 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const titleWords = post.data.title.split(' ').slice(0, 6).join(' ');
+
+// 카테고리별 색상 테마
+const categoryThemes: Record<string, { bg: string; accent: string }> = {
+	'AI 관련': { bg: '#1a3a4a', accent: '#4dd0e1' },
+	'개발일지': { bg: '#2d3a4f', accent: '#90caf9' },
+	'데이터베이스': { bg: '#3d2f45', accent: '#ce93d8' },
+	'기타': { bg: '#3a3a2e', accent: '#dce775' },
+};
+
+const theme = categoryThemes[post.data.category] || { bg: '#2a2a2a', accent: '#9ec5f8' };
+const titleLines = post.data.title.split(' ');
+const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(' ');
+const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
 ---
 
 <article class="shelf-card">
 	<a href={`/posts/${post.slug}/`} class="shelf-link">
-		<div class="card-cover">
+		<div class="book-cover" style={`--cover-bg: ${theme.bg}; --cover-accent: ${theme.accent}`}>
 			{post.data.heroImage ? (
-				<img src={post.data.heroImage} alt={post.data.title} />
+				<img src={post.data.heroImage} alt={post.data.title} class="cover-image" />
 			) : (
-				<div class="generated-cover">
-					<span class="cover-category">{post.data.category}</span>
-					<p class="cover-title">{titleWords}</p>
-				</div>
+				<>
+					<div class="cover-decoration">
+						<div class="deco-circle"></div>
+						<div class="deco-dots"></div>
+					</div>
+					<div class="cover-panel">
+						<span class="panel-category">{post.data.category}</span>
+						<div class="panel-title">
+							<span>{firstLine}</span>
+							{secondLine && <span>{secondLine}</span>}
+						</div>
+					</div>
+					<div class="cover-author">Siyoon</div>
+				</>
 			)}
 		</div>
 		<div class="shelf-meta">
@@ -42,49 +64,111 @@ const titleWords = post.data.title.split(' ').slice(0, 6).join(' ');
 	.shelf-link:hover h3 {
 		color: var(--accent);
 	}
-
-	/* Card Cover */
-	.card-cover {
-		aspect-ratio: 3 / 4;
-		border-radius: 8px;
-		overflow: hidden;
-		background: var(--bg-elevated);
-		border: 1px solid rgba(255, 255, 255, 0.06);
+	.shelf-link:hover .book-cover {
+		transform: translateY(-4px);
+		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
 	}
-	.card-cover img {
+
+	/* Book Cover */
+	.book-cover {
+		position: relative;
+		aspect-ratio: 3 / 4;
+		border-radius: 4px 12px 12px 4px;
+		overflow: hidden;
+		background: var(--cover-bg);
+		box-shadow:
+			0 4px 16px rgba(0, 0, 0, 0.3),
+			inset -2px 0 0 rgba(255, 255, 255, 0.05);
+		transition: transform 200ms ease, box-shadow 200ms ease;
+	}
+	.book-cover::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 12px;
+		background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent);
+		z-index: 10;
+	}
+
+	.cover-image {
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
 	}
 
-	/* Generated Cover */
-	.generated-cover {
-		width: 100%;
-		height: 100%;
-		padding: 1rem;
+	/* Decoration */
+	.cover-decoration {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden;
+	}
+	.deco-circle {
+		position: absolute;
+		top: -20%;
+		right: -30%;
+		width: 80%;
+		height: 60%;
+		border-radius: 50%;
+		background: var(--cover-accent);
+		opacity: 0.15;
+	}
+	.deco-dots {
+		position: absolute;
+		bottom: 15%;
+		left: 10%;
+		width: 30px;
+		height: 30px;
+		background-image: radial-gradient(var(--cover-accent) 2px, transparent 2px);
+		background-size: 8px 8px;
+		opacity: 0.4;
+	}
+
+	/* Panel (white card inside) */
+	.cover-panel {
+		position: absolute;
+		left: 12%;
+		right: 12%;
+		top: 18%;
+		bottom: 22%;
+		background: #fafafa;
+		border-radius: 2px;
+		padding: 0.8rem;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
-		background: linear-gradient(145deg, #1a1f28 0%, #141921 100%);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	}
-	.cover-category {
-		font-size: 0.62rem;
+	.panel-category {
+		font-size: 0.55rem;
 		font-weight: 600;
-		letter-spacing: 0.06em;
+		letter-spacing: 0.05em;
 		text-transform: uppercase;
-		color: var(--accent);
-		opacity: 0.8;
+		color: #666;
+		margin-bottom: auto;
 	}
-	.cover-title {
-		margin: 0;
-		font-size: 0.82rem;
-		font-weight: 600;
-		line-height: 1.4;
-		color: var(--text-strong);
-		display: -webkit-box;
-		-webkit-line-clamp: 4;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
+	.panel-title {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		font-size: 0.78rem;
+		font-weight: 700;
+		line-height: 1.3;
+		color: #1a1a1a;
+		word-break: keep-all;
+	}
+
+	/* Author */
+	.cover-author {
+		position: absolute;
+		bottom: 8%;
+		left: 12%;
+		font-size: 0.65rem;
+		color: rgba(255, 255, 255, 0.7);
+		font-weight: 500;
 	}
 
 	/* Meta */

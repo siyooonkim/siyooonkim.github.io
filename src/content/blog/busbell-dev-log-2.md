@@ -6,7 +6,6 @@ updatedDate: '2025-09-07'
 category: '개발일지'
 tags: ['project', 'busbell', 'prd', 'react-native', 'nestjs']
 draft: false
-heroImage: '/images/posts/busbell-2/cover.png'
 ---
 
 본격적인 개발에 들어가기 전 **PRD(Product Requirement Document)**를 작성한다.
