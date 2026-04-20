@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets';
 import FormattedDate from './FormattedDate.astro';
+import PostCover from './PostCover.astro';
 
 interface Props {
 	post: CollectionEntry<'blog'>;
@@ -13,9 +13,7 @@ const { post, featured = false } = Astro.props;
 
 <article class:list={["post-card", { featured }] }>
 	<a href={`/posts/${post.slug}/`} class="card-link">
-		{post.data.heroImage && (
-			<Image src={post.data.heroImage} alt={post.data.title} widths={[720, 1200]} sizes="(max-width: 960px) 100vw, 720px" />
-		)}
+		<PostCover post={post} compact={!featured} />
 		<div class="card-copy">
 			<p class="card-date"><FormattedDate date={post.data.pubDate} /></p>
 			<p class="card-category">{post.data.category}</p>
@@ -48,12 +46,17 @@ const { post, featured = false } = Astro.props;
 		color: inherit;
 		text-decoration: none;
 	}
-	img {
+	:global(img),
+	:global(.generated-cover) {
 		width: 100%;
 		height: auto;
-		aspect-ratio: 16 / 9;
+		aspect-ratio: 16 / 10;
 		object-fit: cover;
 		border-radius: 0;
+	}
+	.post-card:not(.featured) :global(.generated-cover),
+	.post-card:not(.featured) :global(img) {
+		aspect-ratio: 4 / 5;
 	}
 	.card-copy {
 		padding: 1rem;
