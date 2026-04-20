@@ -1,22 +1,30 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
-import PostCover from './PostCover.astro';
 
 interface Props {
 	post: CollectionEntry<'blog'>;
 }
 
 const { post } = Astro.props;
+const titleWords = post.data.title.split(' ').slice(0, 6).join(' ');
 ---
 
 <article class="shelf-card">
 	<a href={`/posts/${post.slug}/`} class="shelf-link">
-		<PostCover post={post} compact />
-		<div class="shelf-copy">
+		<div class="card-cover">
+			{post.data.heroImage ? (
+				<img src={post.data.heroImage} alt={post.data.title} />
+			) : (
+				<div class="generated-cover">
+					<span class="cover-category">{post.data.category}</span>
+					<p class="cover-title">{titleWords}</p>
+				</div>
+			)}
+		</div>
+		<div class="shelf-meta">
 			<h3>{post.data.title}</h3>
-			<p>{post.data.category}</p>
-			<span><FormattedDate date={post.data.pubDate} /></span>
+			<span class="date"><FormattedDate date={post.data.pubDate} /></span>
 		</div>
 	</a>
 </article>
@@ -27,24 +35,77 @@ const { post } = Astro.props;
 	}
 	.shelf-link {
 		display: grid;
-		gap: 0.75rem;
+		gap: 0.6rem;
 		color: inherit;
 		text-decoration: none;
 	}
-	.shelf-copy {
+	.shelf-link:hover h3 {
+		color: var(--accent);
+	}
+
+	/* Card Cover */
+	.card-cover {
+		aspect-ratio: 3 / 4;
+		border-radius: 8px;
+		overflow: hidden;
+		background: var(--bg-elevated);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+	}
+	.card-cover img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* Generated Cover */
+	.generated-cover {
+		width: 100%;
+		height: 100%;
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		background: linear-gradient(145deg, #1a1f28 0%, #141921 100%);
+	}
+	.cover-category {
+		font-size: 0.62rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--accent);
+		opacity: 0.8;
+	}
+	.cover-title {
+		margin: 0;
+		font-size: 0.82rem;
+		font-weight: 600;
+		line-height: 1.4;
+		color: var(--text-strong);
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	/* Meta */
+	.shelf-meta {
 		display: grid;
-		gap: 0.28rem;
+		gap: 0.2rem;
 	}
 	h3 {
 		margin: 0;
-		font-size: 0.92rem;
-		line-height: 1.45;
+		font-size: 0.82rem;
+		font-weight: 600;
+		line-height: 1.4;
 		color: var(--text-strong);
+		transition: color 160ms ease;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
-	p,
-	span {
-		margin: 0;
-		font-size: 0.74rem;
+	.date {
+		font-size: 0.7rem;
 		color: var(--text-subtle);
 	}
 </style>

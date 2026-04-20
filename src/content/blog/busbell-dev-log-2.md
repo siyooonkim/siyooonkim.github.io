@@ -3,7 +3,7 @@ title: '답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (
 description: '본격 개발 전에 PRD, 유저 시나리오, MVP 범위, 기술 스택을 정리한 기록입니다.'
 pubDate: '2025-09-07'
 updatedDate: '2025-09-07'
-category: '사이드 프로젝트'
+category: '개발일지'
 tags: ['project', 'busbell', 'prd', 'react-native', 'nestjs']
 draft: false
 heroImage: '/images/posts/busbell-2/cover.png'

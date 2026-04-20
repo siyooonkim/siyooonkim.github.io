@@ -2,7 +2,7 @@
 title: 'CS 자동 번역 응답 시스템 만들기 (1) - 문제 정의'
 description: 'CS 응대를 번역+검색+초안 생성으로 나누어 보게 된 배경을 먼저 적어둔 글입니다.'
 pubDate: '2026-04-13'
-category: '개발 일지'
+category: '개발일지'
 tags: ['rag', 'llm', 'customer-support', 'translation']
 draft: false
 ---

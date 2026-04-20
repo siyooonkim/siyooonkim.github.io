@@ -16,23 +16,23 @@ if (!source) {
 	throw new Error('PostCover requires either post or data.');
 }
 
-const titleWords = source.title.split(' ').slice(0, 5).join(' ');
+const titleWords = source.title.split(' ').slice(0, 8).join(' ');
 const publishedYear = source.pubDate instanceof Date ? source.pubDate.getFullYear() : new Date(source.pubDate).getFullYear();
 ---
 
 {
 	source.heroImage ? (
 		<img
-			class="cover-image"
+			class:list={["cover-image", { compact }]}
 			src={source.heroImage}
 			alt={source.title}
 		/>
 	) : (
 		<div class:list={["generated-cover", { compact }]}>
-			<div class="generated-cover__panel">
-				<p class="generated-cover__category">{source.category}</p>
-				<h4>{titleWords}</h4>
-				<span>{publishedYear}</span>
+			<div class="cover-content">
+				<span class="cover-category">{source.category}</span>
+				<h4 class="cover-title">{titleWords}</h4>
+				<span class="cover-year">{publishedYear}</span>
 			</div>
 		</div>
 	)
@@ -42,51 +42,53 @@ const publishedYear = source.pubDate instanceof Date ? source.pubDate.getFullYea
 	.cover-image {
 		width: 100%;
 		height: auto;
-		aspect-ratio: 16 / 10;
+		aspect-ratio: 16 / 9;
 		object-fit: cover;
+		border-radius: 0;
 	}
+	.cover-image.compact {
+		aspect-ratio: 3 / 4;
+	}
+
 	.generated-cover {
 		position: relative;
-		aspect-ratio: 16 / 10;
+		aspect-ratio: 16 / 9;
 		overflow: hidden;
-		background:
-			linear-gradient(180deg, #171d25 0%, #131921 100%);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		background: linear-gradient(145deg, #1a1f28 0%, #141921 100%);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 	}
 	.generated-cover.compact {
-		aspect-ratio: 4 / 5;
+		aspect-ratio: 3 / 4;
 	}
-	.generated-cover__panel {
-		position: absolute;
-		left: 9%;
-		right: 9%;
-		top: 12%;
-		bottom: 12%;
-		padding: 1rem 0.95rem;
+
+	.cover-content {
+		width: 100%;
+		height: 100%;
+		padding: 1.5rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		background: #f4f5f7;
-		color: #141a21;
-		border-radius: 2px;
 	}
-	.generated-cover__category {
-		margin: 0;
-		font-size: 0.62rem;
-		letter-spacing: 0.08em;
+
+	.cover-category {
+		font-size: 0.68rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
 		text-transform: uppercase;
-		color: #475569;
+		color: var(--accent);
 	}
-	h4 {
+
+	.cover-title {
 		margin: 0;
-		font-size: clamp(0.9rem, 0.84rem + 0.22vw, 1.05rem);
-		line-height: 1.45;
-		color: #0f172a;
+		font-size: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
 		font-weight: 700;
+		line-height: 1.35;
+		color: var(--text-strong);
 		letter-spacing: -0.01em;
 	}
-	span {
+
+	.cover-year {
 		font-size: 0.72rem;
-		color: #475569;
+		color: var(--text-subtle);
 	}
 </style>

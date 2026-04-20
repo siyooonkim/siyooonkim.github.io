@@ -2,7 +2,7 @@
 title: '수십억 row 쌓인 DB 테이블 파티셔닝으로 성능 개선한 이야기'
 description: '거대한 테이블에서 조회/정리 비용이 폭증하던 문제를 파티셔닝으로 줄였던 경험을 정리하려는 글입니다.'
 pubDate: '2026-04-09'
-category: 'Database'
+category: '데이터베이스'
 tags: ['database', 'partitioning', 'performance', 'mysql']
 draft: false
 ---

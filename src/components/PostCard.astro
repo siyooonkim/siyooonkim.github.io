@@ -1,7 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
-import PostCover from './PostCover.astro';
 
 interface Props {
 	post: CollectionEntry<'blog'>;
@@ -9,19 +8,32 @@ interface Props {
 }
 
 const { post, featured = false } = Astro.props;
+const titleWords = post.data.title.split(' ').slice(0, 6).join(' ');
 ---
 
-<article class:list={["post-card", { featured }] }>
+<article class:list={["post-card", { featured }]}>
 	<a href={`/posts/${post.slug}/`} class="card-link">
-		<PostCover post={post} compact={!featured} />
-		<div class="card-copy">
-			<p class="card-date"><FormattedDate date={post.data.pubDate} /></p>
-			<p class="card-category">{post.data.category}</p>
+		<div class="card-cover">
+			{post.data.heroImage ? (
+				<img src={post.data.heroImage} alt={post.data.title} />
+			) : (
+				<div class="generated-cover">
+					<span class="cover-category">{post.data.category}</span>
+					<p class="cover-title">{titleWords}</p>
+				</div>
+			)}
+		</div>
+		<div class="card-body">
+			<div class="card-meta">
+				<span class="category">{post.data.category}</span>
+				<span class="dot">·</span>
+				<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+			</div>
 			<h3>{post.data.title}</h3>
-			<p class="card-description">{post.data.description}</p>
+			<p class="description">{post.data.description}</p>
 			{post.data.tags.length > 0 && (
-				<ul class="tag-row" aria-label="Tags">
-					{post.data.tags.map((tag: string) => <li>{tag}</li>)}
+				<ul class="tags">
+					{post.data.tags.slice(0, 3).map((tag: string) => <li>{tag}</li>)}
 				</ul>
 			)}
 		</div>
@@ -30,77 +42,120 @@ const { post, featured = false } = Astro.props;
 
 <style>
 	.post-card {
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		border-radius: 18px;
+		border-radius: 12px;
 		background: rgba(255, 255, 255, 0.02);
+		border: 1px solid rgba(255, 255, 255, 0.06);
 		overflow: hidden;
-		transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+		transition: all 180ms ease;
 	}
 	.post-card:hover {
 		transform: translateY(-2px);
-		border-color: rgba(255, 255, 255, 0.14);
-		background: rgba(255, 255, 255, 0.035);
+		border-color: rgba(255, 255, 255, 0.12);
+		background: rgba(255, 255, 255, 0.04);
 	}
 	.card-link {
 		display: grid;
 		color: inherit;
 		text-decoration: none;
 	}
-	:global(img),
-	:global(.generated-cover) {
+
+	/* Card Cover */
+	.card-cover {
+		aspect-ratio: 16 / 9;
+		overflow: hidden;
+		background: var(--bg-elevated);
+	}
+	.post-card:not(.featured) .card-cover {
+		aspect-ratio: 4 / 3;
+	}
+	.card-cover img {
 		width: 100%;
-		height: auto;
-		aspect-ratio: 16 / 10;
+		height: 100%;
 		object-fit: cover;
-		border-radius: 0;
 	}
-	.post-card:not(.featured) :global(.generated-cover),
-	.post-card:not(.featured) :global(img) {
-		aspect-ratio: 4 / 5;
+
+	/* Generated Cover */
+	.generated-cover {
+		width: 100%;
+		height: 100%;
+		padding: 1.2rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		background: linear-gradient(145deg, #1a1f28 0%, #141921 100%);
 	}
-	.card-copy {
-		padding: 1rem;
-	}
-	.card-date {
-		margin: 0 0 0.45rem;
-		font-size: 0.78rem;
-		color: var(--text-subtle);
-	}
-	.card-category {
-		margin: 0 0 0.45rem;
-		font-size: 0.7rem;
-		font-weight: 700;
+	.cover-category {
+		font-size: 0.65rem;
+		font-weight: 600;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
 		color: var(--accent);
+		opacity: 0.8;
+	}
+	.cover-title {
+		margin: 0;
+		font-size: 0.95rem;
+		font-weight: 600;
+		line-height: 1.4;
+		color: var(--text-strong);
+	}
+
+	/* Card Body */
+	.card-body {
+		padding: 1rem;
+	}
+	.card-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		margin-bottom: 0.5rem;
+		font-size: 0.72rem;
+		color: var(--text-subtle);
+	}
+	.category {
+		color: var(--accent);
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+	.dot {
+		opacity: 0.5;
 	}
 	h3 {
 		margin: 0;
-		font-size: clamp(1rem, 0.94rem + 0.25vw, 1.18rem);
-		line-height: 1.28;
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.35;
+		color: var(--text-strong);
 	}
-	.card-description {
-		margin: 0.55rem 0 0;
-		color: var(--text-muted);
-		font-size: 0.88rem;
+	.post-card.featured h3 {
+		font-size: 1.2rem;
+	}
+	.description {
+		margin: 0.5rem 0 0;
+		font-size: 0.85rem;
 		line-height: 1.5;
+		color: var(--text-muted);
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
-	.tag-row {
+
+	/* Tags */
+	.tags {
 		list-style: none;
 		display: flex;
 		gap: 0.35rem;
 		padding: 0;
-		margin: 0.8rem 0 0;
+		margin: 0.7rem 0 0;
 		flex-wrap: wrap;
 	}
-	.tag-row li {
-		padding: 0.22rem 0.48rem;
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.06);
+	.tags li {
+		padding: 0.18rem 0.45rem;
+		border-radius: 4px;
+		background: rgba(255, 255, 255, 0.05);
 		color: var(--text-subtle);
-		font-size: 0.72rem;
-	}
-	.post-card.featured h3 {
-		font-size: clamp(1.25rem, 1.1rem + 0.55vw, 1.55rem);
+		font-size: 0.68rem;
 	}
 </style>

@@ -2,7 +2,7 @@
 title: 'AI 시대 아군인가 적군인가'
 description: 'AI가 개발자를 대체하느냐보다, 누가 AI를 더 좋은 도구로 바꾸느냐가 중요하다는 생각을 적어둔 글입니다.'
 pubDate: '2026-04-15'
-category: '이런저런'
+category: '기타'
 tags: ['ai', 'career', 'essay']
 draft: false
 ---

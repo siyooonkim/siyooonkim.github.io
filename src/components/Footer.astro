@@ -5,44 +5,51 @@ const today = new Date();
 
 <footer>
 	<div class="footer-shell">
-		<p>© {today.getFullYear()} {SITE_AUTHOR}. Built with Astro and published on GitHub Pages.</p>
+		<p>© {today.getFullYear()} {SITE_AUTHOR}</p>
 		<div class="footer-links">
 			<a href="https://github.com/siyooonkim" target="_blank" rel="noreferrer">GitHub</a>
-			<a href="https://www.linkedin.com/in/siyoon-kim-8a7b1417b/" target="_blank" rel="noreferrer">LinkedIn</a>
 			<a href="mailto:ksyoon0718@gmail.com">Email</a>
 		</div>
 	</div>
 </footer>
 <style>
 	footer {
-		padding: 2rem 0 3.5rem;
+		padding: 1.5rem 0 2.5rem;
 	}
 	.footer-shell {
-		width: min(1120px, calc(100% - 32px));
+		width: min(960px, calc(100% - 48px));
 		margin: 0 auto;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
-		gap: 1em;
-		padding-top: 1.75rem;
-		border-top: 1px solid rgba(255, 255, 255, 0.08);
-		color: var(--text-subtle);
+		gap: 0.8rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.06);
 	}
 	.footer-shell p {
 		margin: 0;
-		font-size: 0.95rem;
+		font-size: 0.78rem;
+		color: var(--text-subtle);
 	}
 	.footer-links {
 		display: flex;
 		gap: 1rem;
-		flex-wrap: wrap;
 	}
 	.footer-links a {
 		text-decoration: none;
+		font-size: 0.78rem;
 		color: var(--text-subtle);
+		transition: color 160ms ease;
 	}
 	.footer-links a:hover {
 		color: var(--text-strong);
+	}
+	@media (max-width: 480px) {
+		.footer-shell {
+			width: min(960px, calc(100% - 32px));
+			flex-direction: column;
+			text-align: center;
+		}
 	}
 </style>
