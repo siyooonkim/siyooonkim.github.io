@@ -8,15 +8,16 @@ interface Props {
 
 const { post } = Astro.props;
 
-// 카테고리별 색상 테마
-const categoryThemes: Record<string, { bg: string; accent: string }> = {
-	'AI 관련': { bg: '#1a3a4a', accent: '#4dd0e1' },
-	'개발일지': { bg: '#2d3a4f', accent: '#90caf9' },
-	'데이터베이스': { bg: '#3d2f45', accent: '#ce93d8' },
-	'기타': { bg: '#3a3a2e', accent: '#dce775' },
+// 카테고리별 색상 + 패턴 타입
+const categoryThemes: Record<string, { bg: string; accent: string; pattern: string }> = {
+	'AI 관련': { bg: '#1e3a3a', accent: '#4dd0e1', pattern: 'waves' },
+	'딥러닝': { bg: '#1a2f4a', accent: '#64b5f6', pattern: 'grid' },
+	'개발일지': { bg: '#2d3a4f', accent: '#90caf9', pattern: 'dots' },
+	'데이터베이스': { bg: '#3d2f45', accent: '#ce93d8', pattern: 'lines' },
+	'그냥저냥': { bg: '#3a3a2e', accent: '#dce775', pattern: 'circles' },
 };
 
-const theme = categoryThemes[post.data.category] || { bg: '#2a2a2a', accent: '#9ec5f8' };
+const theme = categoryThemes[post.data.category] || { bg: '#2a2a2a', accent: '#9ec5f8', pattern: 'dots' };
 const titleLines = post.data.title.split(' ');
 const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(' ');
 const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
@@ -24,15 +25,12 @@ const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
 
 <article class="shelf-card">
 	<a href={`/posts/${post.slug}/`} class="shelf-link">
-		<div class="book-cover" style={`--cover-bg: ${theme.bg}; --cover-accent: ${theme.accent}`}>
+		<div class="book-cover" style={`--cover-bg: ${theme.bg}; --cover-accent: ${theme.accent}`} data-pattern={theme.pattern}>
 			{post.data.heroImage ? (
 				<img src={post.data.heroImage} alt={post.data.title} class="cover-image" />
 			) : (
 				<>
-					<div class="cover-decoration">
-						<div class="deco-circle"></div>
-						<div class="deco-dots"></div>
-					</div>
+					<div class="cover-decoration" data-pattern={theme.pattern}></div>
 					<div class="cover-panel">
 						<span class="panel-category">{post.data.category}</span>
 						<div class="panel-title">
@@ -98,7 +96,7 @@ const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
 		object-fit: cover;
 	}
 
-	/* Decoration */
+	/* Decorations by pattern type */
 	.cover-decoration {
 		position: absolute;
 		top: 0;
@@ -107,25 +105,131 @@ const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
 		bottom: 0;
 		overflow: hidden;
 	}
-	.deco-circle {
+
+	/* Waves pattern */
+	.cover-decoration[data-pattern="waves"]::before {
+		content: '';
 		position: absolute;
-		top: -20%;
-		right: -30%;
-		width: 80%;
-		height: 60%;
+		bottom: -10%;
+		left: -20%;
+		width: 140%;
+		height: 50%;
+		background: var(--cover-accent);
+		opacity: 0.12;
+		border-radius: 50% 50% 0 0;
+	}
+	.cover-decoration[data-pattern="waves"]::after {
+		content: '';
+		position: absolute;
+		bottom: -20%;
+		right: -10%;
+		width: 100%;
+		height: 40%;
+		background: var(--cover-accent);
+		opacity: 0.08;
+		border-radius: 50% 50% 0 0;
+	}
+
+	/* Grid pattern */
+	.cover-decoration[data-pattern="grid"]::before {
+		content: '';
+		position: absolute;
+		top: 5%;
+		right: 5%;
+		width: 40%;
+		height: 30%;
+		background-image:
+			linear-gradient(var(--cover-accent) 1px, transparent 1px),
+			linear-gradient(90deg, var(--cover-accent) 1px, transparent 1px);
+		background-size: 12px 12px;
+		opacity: 0.2;
+	}
+	.cover-decoration[data-pattern="grid"]::after {
+		content: '';
+		position: absolute;
+		bottom: 10%;
+		left: 8%;
+		width: 20px;
+		height: 20px;
+		border: 2px solid var(--cover-accent);
+		opacity: 0.3;
+	}
+
+	/* Dots pattern */
+	.cover-decoration[data-pattern="dots"]::before {
+		content: '';
+		position: absolute;
+		top: -15%;
+		right: -25%;
+		width: 70%;
+		height: 50%;
 		border-radius: 50%;
 		background: var(--cover-accent);
-		opacity: 0.15;
+		opacity: 0.12;
 	}
-	.deco-dots {
+	.cover-decoration[data-pattern="dots"]::after {
+		content: '';
+		position: absolute;
+		bottom: 12%;
+		left: 8%;
+		width: 32px;
+		height: 32px;
+		background-image: radial-gradient(var(--cover-accent) 2px, transparent 2px);
+		background-size: 8px 8px;
+		opacity: 0.35;
+	}
+
+	/* Lines pattern */
+	.cover-decoration[data-pattern="lines"]::before {
+		content: '';
+		position: absolute;
+		top: 8%;
+		right: 8%;
+		width: 35%;
+		height: 25%;
+		background-image: repeating-linear-gradient(
+			-45deg,
+			var(--cover-accent) 0,
+			var(--cover-accent) 1px,
+			transparent 1px,
+			transparent 8px
+		);
+		opacity: 0.25;
+	}
+	.cover-decoration[data-pattern="lines"]::after {
+		content: '';
 		position: absolute;
 		bottom: 15%;
 		left: 10%;
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		background: var(--cover-accent);
+		opacity: 0.2;
+	}
+
+	/* Circles pattern */
+	.cover-decoration[data-pattern="circles"]::before {
+		content: '';
+		position: absolute;
+		top: 10%;
+		right: 10%;
+		width: 50px;
+		height: 50px;
+		border: 2px solid var(--cover-accent);
+		border-radius: 50%;
+		opacity: 0.25;
+	}
+	.cover-decoration[data-pattern="circles"]::after {
+		content: '';
+		position: absolute;
+		bottom: 20%;
+		left: 15%;
 		width: 30px;
 		height: 30px;
-		background-image: radial-gradient(var(--cover-accent) 2px, transparent 2px);
-		background-size: 8px 8px;
-		opacity: 0.4;
+		border: 2px solid var(--cover-accent);
+		border-radius: 50%;
+		opacity: 0.2;
 	}
 
 	/* Panel (white card inside) */

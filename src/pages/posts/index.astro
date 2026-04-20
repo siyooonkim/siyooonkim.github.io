@@ -8,7 +8,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 );
 
 // Group by category
-const categories = ['AI 관련', '개발일지', '데이터베이스', '기타'];
+const categories = ['AI 관련', '딥러닝', '개발일지', '데이터베이스', '그냥저냥'];
 const groupedPosts = categories
 	.map((cat) => ({
 		category: cat,

@@ -8,13 +8,14 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
-const sectionOrder = ['AI 관련', '개발일지', '데이터베이스', '기타'];
+const sectionOrder = ['AI 관련', '딥러닝', '개발일지', '데이터베이스', '그냥저냥'];
 
 const sectionDescriptions: Record<string, string> = {
-	'AI 관련': '딥러닝, LLM, 그리고 AI 시대에 대한 기록',
+	'AI 관련': 'AX 시대를 살아가며 느끼는 생각들',
+	'딥러닝': '모델링, 실험, 그리고 ML 엔지니어링',
 	'개발일지': '오늘 풀었던 문제와 설계 결정들',
 	'데이터베이스': '데이터 모델링, 쿼리, 성능과 운영',
-	'기타': '개발 바깥의 생각과 메모',
+	'그냥저냥': '개발 바깥의 생각과 메모',
 };
 
 const groupedSections = sectionOrder
