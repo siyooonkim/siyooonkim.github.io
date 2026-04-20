@@ -1,3 +1,5 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
 :root {
 	--bg: #0d1117;
 	--bg-elevated: #121821;
@@ -18,7 +20,7 @@ html {
 }
 
 body {
-	font-family: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+	font-family: 'Pretendard Variable', 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
 	margin: 0;
 	padding: 0;
 	text-align: left;
@@ -29,7 +31,7 @@ body {
 	overflow-wrap: break-word;
 	color: var(--text-body);
 	font-size: 16px;
-	line-height: 1.68;
+	line-height: 1.65;
 }
 
 main {
@@ -44,8 +46,9 @@ h5,
 h6 {
 	margin: 0 0 0.5rem 0;
 	color: var(--text-strong);
-	line-height: 1.15;
+	line-height: 1.22;
 	font-weight: 700;
+	letter-spacing: -0.015em;
 }
 strong,
 b {
@@ -71,10 +74,10 @@ p {
 		scroll-margin-top: 6rem;
 	}
 	.prose h2 {
-		font-size: clamp(1.45rem, 1.3rem + 0.55vw, 1.95rem);
+		font-size: clamp(1.4rem, 1.28rem + 0.45vw, 1.8rem);
 	}
 	.prose h3 {
-		font-size: clamp(1.18rem, 1.08rem + 0.3vw, 1.45rem);
+		font-size: clamp(1.14rem, 1.06rem + 0.24vw, 1.32rem);
 	}
 	table {
 	width: 100%;
