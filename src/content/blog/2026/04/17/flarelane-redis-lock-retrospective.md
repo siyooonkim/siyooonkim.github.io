@@ -1,7 +1,7 @@
 ---
-title: '장바구니 할인 푸시, 5번 보내면 안 되잖아'
+title: 'MSA 구조에서 CRM 푸시 개선하기'
 description: ''
-pubDate: '2026-04-17'
+pubDate: '2026-04-10'
 category: '개발일지'
 tags: []
 draft: false
