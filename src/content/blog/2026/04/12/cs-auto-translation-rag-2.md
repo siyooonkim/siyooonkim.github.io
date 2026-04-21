@@ -150,21 +150,16 @@ AI: "기다려주셔서 감사합니다. 배송 상황을 확인하여..."
 
 ## 아키텍처 전체 구조
 
-```
-LINE 서버
-    │ Webhook
-    ▼
-API Gateway → ALB → EC2 (NestJS)
-                      │
-                      ├── LINE 모듈: 웹훅 수신, 서명 검증, 메시지 전송
-                      ├── Claude 모듈: 번역, 답변 추천, LLM 채팅
-                      ├── Ticket 모듈: 상태 관리, CRUD
-                      └── Slack 모듈: 알림 발송
-                      │
-                      ▼
-                    MySQL
-              (CsUser, CsTicket, CsMessage,
-               CsCategory, CsPolicy)
+```mermaid
+flowchart TD
+    LINE[LINE 서버] -->|Webhook| APIGW[API Gateway]
+    APIGW --> ALB
+    ALB --> EC2[EC2 - NestJS]
+    EC2 --> LINE_MOD[LINE 모듈]
+    EC2 --> CLAUDE[Claude 모듈]
+    EC2 --> TICKET[Ticket 모듈]
+    EC2 --> SLACK[Slack 모듈]
+    EC2 --> DB[(MySQL)]
 ```
 
 ---
