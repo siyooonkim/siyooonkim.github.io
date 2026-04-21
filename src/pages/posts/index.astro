@@ -4,10 +4,13 @@ import PostCard from '../../components/PostCard.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+	(a, b) => {
+		const dateDiff = b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+		if (dateDiff !== 0) return dateDiff;
+		return a.data.title.localeCompare(b.data.title);
+	},
 );
 
-// Group by category
 const categories = ['AI 관련', '딥러닝', '개발일지', '데이터베이스', '그냥저냥'];
 const groupedPosts = categories
 	.map((cat) => ({
@@ -15,6 +18,8 @@ const groupedPosts = categories
 		posts: posts.filter((p) => p.data.category === cat),
 	}))
 	.filter((g) => g.posts.length > 0);
+
+const PER_PAGE = 8;
 ---
 
 <SiteLayout title="Posts" description="All posts">
@@ -33,35 +38,85 @@ const groupedPosts = categories
 
 		<div class="posts-grid">
 			{posts.map((post, index) => (
-				<div class="post-item" data-category={post.data.category}>
+				<div class="post-item" data-category={post.data.category} data-index={index}>
 					<PostCard post={post} featured={false} />
 				</div>
 			))}
 		</div>
+
+		<nav class="pagination">
+			<button class="page-btn prev" disabled>&larr;</button>
+			<span class="page-info"></span>
+			<button class="page-btn next">&rarr;</button>
+		</nav>
 	</main>
 </SiteLayout>
 
-<script is:inline>
+<script is:inline define:vars={{ PER_PAGE }}>
 	document.addEventListener('DOMContentLoaded', function() {
 		const chips = document.querySelectorAll('.filter-chip');
-		const items = document.querySelectorAll('.post-item');
+		const items = Array.from(document.querySelectorAll('.post-item'));
+		const prevBtn = document.querySelector('.page-btn.prev');
+		const nextBtn = document.querySelector('.page-btn.next');
+		const pageInfo = document.querySelector('.page-info');
+		const pagination = document.querySelector('.pagination');
+
+		let currentPage = 1;
+		let currentCategory = 'all';
+
+		function getVisibleItems() {
+			return items.filter(function(item) {
+				return currentCategory === 'all' || item.getAttribute('data-category') === currentCategory;
+			});
+		}
+
+		function render() {
+			var visible = getVisibleItems();
+			var totalPages = Math.ceil(visible.length / PER_PAGE);
+			if (currentPage > totalPages) currentPage = totalPages;
+			if (currentPage < 1) currentPage = 1;
+
+			var start = (currentPage - 1) * PER_PAGE;
+			var end = start + PER_PAGE;
+
+			items.forEach(function(item) { item.style.display = 'none'; });
+			visible.forEach(function(item, i) {
+				if (i >= start && i < end) {
+					item.style.display = '';
+				}
+			});
+
+			pageInfo.textContent = currentPage + ' / ' + totalPages;
+			prevBtn.disabled = currentPage <= 1;
+			nextBtn.disabled = currentPage >= totalPages;
+
+			if (totalPages <= 1) {
+				pagination.style.display = 'none';
+			} else {
+				pagination.style.display = '';
+			}
+		}
 
 		chips.forEach(function(chip) {
 			chip.addEventListener('click', function() {
 				chips.forEach(function(c) { c.classList.remove('active'); });
 				chip.classList.add('active');
-
-				const category = chip.getAttribute('data-category');
-
-				items.forEach(function(item) {
-					if (category === 'all' || item.getAttribute('data-category') === category) {
-						item.style.display = '';
-					} else {
-						item.style.display = 'none';
-					}
-				});
+				currentCategory = chip.getAttribute('data-category');
+				currentPage = 1;
+				render();
 			});
 		});
+
+		prevBtn.addEventListener('click', function() {
+			if (currentPage > 1) { currentPage--; render(); }
+		});
+
+		nextBtn.addEventListener('click', function() {
+			var totalPages = Math.ceil(getVisibleItems().length / PER_PAGE);
+			if (currentPage < totalPages) { currentPage++; render(); }
+		});
+
+		render();
 	});
 </script>
 
@@ -85,7 +140,6 @@ const groupedPosts = categories
 		font-size: 0.88rem;
 	}
 
-	/* Filter Nav */
 	.filter-nav {
 		display: flex;
 		gap: 0.4rem;
@@ -113,18 +167,43 @@ const groupedPosts = categories
 	.post-item {
 		display: block;
 	}
-	.post-item[style*="display: none"] {
-		display: none !important;
-	}
 
-	/* Grid */
 	.posts-grid {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 1rem;
 	}
-	.posts-grid :global(.featured) {
-		grid-column: 1 / -1;
+
+	.pagination {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		margin-top: 2rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--line);
+	}
+	.page-btn {
+		padding: 0.4rem 0.8rem;
+		border-radius: 6px;
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		color: var(--text-muted);
+		font-size: 0.85rem;
+		cursor: pointer;
+		transition: all 160ms ease;
+	}
+	.page-btn:hover:not(:disabled) {
+		background: rgba(255, 255, 255, 0.08);
+		color: var(--text-strong);
+	}
+	.page-btn:disabled {
+		opacity: 0.3;
+		cursor: default;
+	}
+	.page-info {
+		font-size: 0.82rem;
+		color: var(--text-muted);
 	}
 
 	@media (max-width: 720px) {
@@ -133,9 +212,6 @@ const groupedPosts = categories
 		}
 		.posts-grid {
 			grid-template-columns: 1fr;
-		}
-		.posts-grid :global(.featured) {
-			grid-column: 1;
 		}
 	}
 </style>
