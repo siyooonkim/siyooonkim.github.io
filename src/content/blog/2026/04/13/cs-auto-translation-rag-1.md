@@ -172,5 +172,5 @@ CS 시스템의 핵심은 티켓 상태 관리다. 상태가 엉키면 고객이
 
 > 시리즈
 > - **LINE CS 번역 챗봇 만들기 (1)** ← 현재 글
-> - [LINE CS 번역 챗봇 만들기 (2)](/blog/2026/04/12/cs-auto-translation-rag-2)
-> - [LINE CS 번역 챗봇 만들기 (3)](/blog/2026/04/11/cs-auto-translation-rag-3)
+> - [LINE CS 번역 챗봇 만들기 (2)](/posts/2026/04/12/cs-auto-translation-rag-2)
+> - [LINE CS 번역 챗봇 만들기 (3)](/posts/2026/04/11/cs-auto-translation-rag-3)

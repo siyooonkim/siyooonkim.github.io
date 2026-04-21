@@ -7,7 +7,7 @@ tags: []
 draft: false
 ---
 
-[이전 편](/blog/2026/04/13/cs-auto-translation-rag-1)에서 요구사항을 정리하고 유저 플로우를 설계했다. 이번 편에서는 AI 부분을 설계한다.
+[이전 편](/posts/2026/04/13/cs-auto-translation-rag-1)에서 요구사항을 정리하고 유저 플로우를 설계했다. 이번 편에서는 AI 부분을 설계한다.
 
 핵심 질문은 하나였다. **AI가 답변을 추천할 때, 브랜드 정책과 응대 지식을 어떻게 주입할 것인가?**
 
@@ -172,6 +172,6 @@ API Gateway → ALB → EC2 (NestJS)
 다음 편에서는 DB 모델 설계와, 축적된 데이터가 자동응답으로 확장되는 구조를 다룬다.
 
 > 시리즈
-> - [LINE CS 번역 챗봇 만들기 (1)](/blog/2026/04/13/cs-auto-translation-rag-1)
+> - [LINE CS 번역 챗봇 만들기 (1)](/posts/2026/04/13/cs-auto-translation-rag-1)
 > - **LINE CS 번역 챗봇 만들기 (2)** ← 현재 글
-> - [LINE CS 번역 챗봇 만들기 (3)](/blog/2026/04/11/cs-auto-translation-rag-3)
+> - [LINE CS 번역 챗봇 만들기 (3)](/posts/2026/04/11/cs-auto-translation-rag-3)
