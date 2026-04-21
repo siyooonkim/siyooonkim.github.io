@@ -34,7 +34,7 @@ const groupedPosts = categories
 		<div class="posts-grid">
 			{posts.map((post, index) => (
 				<div class="post-item" data-category={post.data.category}>
-					<PostCard post={post} featured={index === 0} />
+					<PostCard post={post} featured={false} />
 				</div>
 			))}
 		</div>
