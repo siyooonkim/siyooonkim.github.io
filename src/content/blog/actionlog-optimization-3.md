@@ -1,6 +1,6 @@
 ---
-title: '파티셔닝으로 초 단위까지 끌어내리기 — ActionLog 최적화 (3)'
-description: '인덱스 + 쿼리 정비 후 파티셔닝을 적용해 1시간 넘던 쿼리를 초 단위로 줄인 마지막 편입니다. PK 변경, 버퍼 풀, dual-write 무중단 전환 과정을 정리했습니다.'
+title: '수십억 건 테이블 최적화하기 (3)'
+description: '파티셔닝으로 초 단위까지 끌어내리기 — PK 변경, 버퍼 풀, 무중단 전환'
 pubDate: '2026-04-21'
 category: '데이터베이스'
 tags: ['database', 'mysql', 'partitioning', 'migration', 'buffer-pool', 'performance']
@@ -232,26 +232,26 @@ dual-write를 하면 복사 기간 동안 **새로 들어오는 데이터가 양
 </tr>
 </thead>
 <tbody>
-<tr style="background: #fff5f5;">
-<td style="padding: 0.75rem;">🔴 Before</td>
+<tr>
+<td style="padding: 0.75rem;">Before</td>
 <td style="padding: 0.75rem; text-align: center; font-weight: bold;">1시간+</td>
 <td style="padding: 0.75rem; text-align: center;">—</td>
 <td style="padding: 0.75rem;">Full Table Scan</td>
 </tr>
-<tr style="background: #fffbeb;">
-<td style="padding: 0.75rem;">🟡 Phase 1</td>
+<tr>
+<td style="padding: 0.75rem;">Phase 1</td>
 <td style="padding: 0.75rem; text-align: center; font-weight: bold;">51초</td>
 <td style="padding: 0.75rem; text-align: center;">~70x</td>
 <td style="padding: 0.75rem;">B-Tree 인덱스 추가</td>
 </tr>
-<tr style="background: #fff7ed;">
-<td style="padding: 0.75rem;">🟠 Phase 1.5</td>
+<tr>
+<td style="padding: 0.75rem;">Phase 1.5</td>
 <td style="padding: 0.75rem; text-align: center; font-weight: bold;">51초 (안정화)</td>
 <td style="padding: 0.75rem; text-align: center;">—</td>
 <td style="padding: 0.75rem;">쿼리 정비, Phase 2 기반 마련</td>
 </tr>
-<tr style="background: #f0fdf4;">
-<td style="padding: 0.75rem;">🟢 Phase 2</td>
+<tr>
+<td style="padding: 0.75rem;">Phase 2</td>
 <td style="padding: 0.75rem; text-align: center; font-weight: bold;">5~15초</td>
 <td style="padding: 0.75rem; text-align: center;">~수백x</td>
 <td style="padding: 0.75rem;">월별 파티셔닝 + 무중단 전환</td>
@@ -296,7 +296,7 @@ dual-write를 하면 복사 기간 동안 **새로 들어오는 데이터가 양
 
 이 글이 비슷한 상황에 처한 누군가에게 도움이 되었으면 한다.
 
-> 📖 시리즈
-> - [1편: 수십억 건 테이블, 쿼리에 1시간이 걸린다](/blog/db-partitioning-performance)
-> - [2편: 인덱스를 달았는데 왜 안 타지?](/blog/actionlog-optimization-2)
-> - **3편: 파티셔닝으로 초 단위까지 끌어내리기** ← 현재 글
+> 시리즈
+> - [수십억 건 테이블 최적화하기 (1)](/blog/db-partitioning-performance)
+> - [수십억 건 테이블 최적화하기 (2)](/blog/actionlog-optimization-2)
+> - **수십억 건 테이블 최적화하기 (3)** ← 현재 글

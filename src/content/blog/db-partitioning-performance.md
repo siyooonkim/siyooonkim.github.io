@@ -1,6 +1,6 @@
 ---
-title: '수십억 건 테이블, 쿼리에 1시간이 걸린다 — ActionLog 최적화 (1)'
-description: '수십억 row가 쌓인 ActionLog 테이블에서 Full Table Scan으로 1시간 넘게 걸리던 쿼리를, B-Tree 인덱스 하나로 51초까지 줄인 과정을 정리했습니다.'
+title: '수십억 건 테이블 최적화하기 (1)'
+description: 'B-Tree 인덱스로 1시간짜리 쿼리를 51초로 줄인 이야기'
 pubDate: '2026-04-21'
 category: '데이터베이스'
 tags: ['database', 'mysql', 'index', 'b-tree', 'performance', 'optimization']
@@ -27,26 +27,22 @@ draft: false
 
 본격적인 이야기 전에, 전체 그림을 먼저 그려보자. 이 시리즈가 다루는 전체 과정은 다음과 같다.
 
-<div style="overflow-x: auto; margin: 2rem 0;">
-<table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 0.9rem;">
-<tr>
-<td style="padding: 1rem; background: #ff6b6b; color: white; border-radius: 8px; font-weight: bold;">
-🔴 Phase 0<br/>현황 분석<br/><br/><span style="font-size: 0.8rem;">측정 기준 쿼리 5개 선정<br/>Before: <strong>1시간+</strong></span>
-</td>
-<td style="padding: 0.5rem; font-size: 1.5rem;">→</td>
-<td style="padding: 1rem; background: #ffd93d; color: #333; border-radius: 8px; font-weight: bold;">
-🟡 Phase 1<br/>인덱스 최적화<br/><br/><span style="font-size: 0.8rem;">B-Tree 인덱스 추가<br/>복합 인덱스 설계<br/>After: <strong>51초</strong></span>
-</td>
-<td style="padding: 0.5rem; font-size: 1.5rem;">→</td>
-<td style="padding: 1rem; background: #ffa94d; color: #333; border-radius: 8px; font-weight: bold;">
-🟠 Phase 1.5<br/>쿼리 정비<br/><br/><span style="font-size: 0.8rem;">23개 쿼리 전수조사<br/>DATE() 함수 제거<br/>createDate 조건 추가</span>
-</td>
-<td style="padding: 0.5rem; font-size: 1.5rem;">→</td>
-<td style="padding: 1rem; background: #6bcb77; color: white; border-radius: 8px; font-weight: bold;">
-🟢 Phase 2<br/>파티셔닝<br/><br/><span style="font-size: 0.8rem;">월별 파티션<br/>dual-write 전환<br/>After: <strong>초 단위</strong></span>
-</td>
-</tr>
-</table>
+<div style="display: flex; gap: 0.5rem; align-items: center; overflow-x: auto; margin: 2rem 0;">
+<div style="flex: 1; min-width: 160px; padding: 1rem; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; text-align: center;">
+<strong>Phase 0</strong><br/>현황 분석<br/><br/><span style="font-size: 0.85rem; color: #666;">측정 기준 쿼리 선정<br/>인덱스 전수 조사</span>
+</div>
+<div style="font-size: 1.2rem; color: #adb5bd;">→</div>
+<div style="flex: 1; min-width: 160px; padding: 1rem; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; text-align: center;">
+<strong>Phase 1</strong><br/>인덱스 최적화<br/><br/><span style="font-size: 0.85rem; color: #666;">B-Tree 인덱스 추가<br/>복합 인덱스 설계</span>
+</div>
+<div style="font-size: 1.2rem; color: #adb5bd;">→</div>
+<div style="flex: 1; min-width: 160px; padding: 1rem; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; text-align: center;">
+<strong>Phase 1.5</strong><br/>쿼리 정비<br/><br/><span style="font-size: 0.85rem; color: #666;">23개 쿼리 전수조사<br/>DATE() 함수 제거</span>
+</div>
+<div style="font-size: 1.2rem; color: #adb5bd;">→</div>
+<div style="flex: 1; min-width: 160px; padding: 1rem; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; text-align: center;">
+<strong>Phase 2</strong><br/>파티셔닝<br/><br/><span style="font-size: 0.85rem; color: #666;">월별 파티션<br/>dual-write 전환</span>
+</div>
 </div>
 
 왜 이 순서인가? **가장 비용이 낮고 효과가 큰 것부터** 적용하기 위해서다. 인덱스 추가는 서비스 중단 없이 할 수 있지만, 파티셔닝은 테이블 구조 자체를 바꿔야 한다. 쉬운 것부터 하고, 각 단계마다 측정해서 "여기서 멈춰도 되는지"를 판단하는 방식이다.
@@ -274,19 +270,9 @@ console_69  51 s
 
 ---
 
-## 다음 편 예고
+다음 편에서는 파티셔닝 전 작업을 진행한다. 쿼리의 WHERE 절에 파티션 키를 반드시 포함시키는 작업이다.
 
-파티셔닝을 적용하려면 쿼리의 WHERE 절에 파티션 키(`createDate`)가 반드시 포함되어야 한다. 없으면 모든 파티션을 다 스캔해서, 파티셔닝 안 한 것보다 오히려 느려질 수 있다.
-
-그래서 기존 쿼리 23개를 전수 조사했다. 결과는 좀 충격적이었다.
-
-> **61%의 쿼리가 createDate를 WHERE에 포함하지 않고 있었다.**
-
-심지어 함수 이름이 `getLikeStoreByDateRows`인데 실제로는 날짜 필터가 없는 쿼리도 있었다.
-
-**다음 편에서는 이 발견과 해결 과정을 다룬다.**
-
-> 📖 시리즈
-> - **1편: 수십억 건 테이블, 쿼리에 1시간이 걸린다** ← 현재 글
-> - 2편: 인덱스를 달았는데 왜 안 타지? (준비 중)
-> - 3편: 파티셔닝으로 초 단위까지 끌어내리기 (준비 중)
+> 시리즈
+> - **수십억 건 테이블 최적화하기 (1)** ← 현재 글
+> - [수십억 건 테이블 최적화하기 (2)](/blog/actionlog-optimization-2) 
+> - [수십억 건 테이블 최적화하기 (3)](/blog/actionlog-optimization-3)
