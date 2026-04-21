@@ -48,19 +48,19 @@ Onboarding → Search → RouteDetail → AlarmList
 
 ### 검색 화면
 
-![검색 화면](/images/posts/busbell-4/search.png)
+<img src="/images/posts/busbell-4/search.png" alt="검색 화면" style="max-width: 320px;" />
 
 메인 화면이다. 버스 번호를 입력하면 된다. 자주 찾는 버스를 바로 검색할 수 있도록 최근 검색한 버스 번호를 카드로 보여준다. 9507, 3213, 9401, M4403 — 전부 내가 매일 타거나 환승하는 노선들이다.
 
 ### 검색 결과
 
-![검색 결과](/images/posts/busbell-4/search-result.png)
+<img src="/images/posts/busbell-4/search-result.png" alt="검색 결과" style="max-width: 320px;" />
 
 버스 번호를 입력하면 해당 노선 정보가 바로 뜬다. 기점/종점, 지역, 버스 유형이 표시된다. 390을 검색하니까 성남/용인 일반형시내버스가 나왔다.
 
 ### 노선 상세 + 알림 설정
 
-![노선 상세](/images/posts/busbell-4/route-detail.png)
+<img src="/images/posts/busbell-4/route-detail.png" alt="노선 상세" style="max-width: 320px;" />
 
 여기가 핵심 화면이다. 노선을 선택하면 정류장 목록이 나오고, 정류장을 탭하면 바텀시트로 알림 설정 화면이 올라온다.
 
@@ -68,7 +68,7 @@ Onboarding → Search → RouteDetail → AlarmList
 
 ### 알림 내역
 
-![알림 내역](/images/posts/busbell-4/alarm-list.png)
+<img src="/images/posts/busbell-4/alarm-list.png" alt="알림 내역" style="max-width: 320px;" />
 
 설정한 알림 목록이다. 버스 번호, 정류장, 도착 예정 시간, 알림 시점이 한눈에 보이고 취소도 가능하다. 심플하게 만들었다. 여기에 기능을 더 넣고 싶은 유혹이 있었는데, 참았다.
 
@@ -131,25 +131,40 @@ src/api/
 
 ## 전체 플로우
 
-```
-[나]                    [앱]                    [백엔드]              [공공API]
- |                       |                       |                     |
- |-- "9507 검색" ------->|-- GET /bus/search ---->|---- GBIS API ------>|
- |                       |<-- 노선 목록 ---------|<--- 결과 -----------|
- |                       |                       |                     |
- |-- "봇들1단지 선택" -->|-- GET /route-stops --->|---- GBIS API ------>|
- |                       |<-- 정류장 목록 --------|<--- 정류장 ---------|
- |                       |                       |                     |
- |-- "5분전 알림" ------>|-- POST /notifications->|                     |
- |                       |                       |-- ETA 조회 -------->|
- |                       |                       |<-- 20분 후 도착 ----|
- |                       |                       |                     |
- |                       |                       | [15분 대기...]       |
- |                       |                       |                     |
- |                       |                       |-- ETA 재조회 ------>|
- |<-- 푸시 알림 ---------|<-- FCM 발송 ----------|<-- 5분 후 도착 -----|
- |                       |                       |                     |
- "집에서 나간다"
+```mermaid
+sequenceDiagram
+    actor 나
+    participant 앱
+    participant 백엔드
+    participant 공공API
+
+    나->>앱: "9507" 검색
+    앱->>백엔드: GET /bus/search
+    백엔드->>공공API: GBIS API
+    공공API-->>백엔드: 노선 데이터
+    백엔드-->>앱: 노선 목록
+    앱-->>나: 검색 결과 표시
+
+    나->>앱: "봇들1단지" 선택
+    앱->>백엔드: GET /route-stops
+    백엔드->>공공API: GBIS API
+    공공API-->>백엔드: 정류장 데이터
+    백엔드-->>앱: 정류장 목록
+    앱-->>나: 정류장 목록 표시
+
+    나->>앱: "5분 전 알림" 설정
+    앱->>백엔드: POST /notifications
+    백엔드->>공공API: ETA 조회
+    공공API-->>백엔드: 20분 후 도착
+
+    Note over 백엔드: 15분 대기...
+
+    백엔드->>공공API: ETA 재조회
+    공공API-->>백엔드: 5분 후 도착
+    백엔드->>앱: FCM 푸시 발송
+    앱-->>나: "390번 버스 곧 도착"
+
+    Note over 나: 집에서 나간다
 ```
 
 ## 마치며

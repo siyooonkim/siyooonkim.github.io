@@ -46,4 +46,6 @@ draft: false
 이건 나를 위한 서비스다.  
 ***서비스를 통해 수익을 노리는 것도 아니고 그냥 나 불편하기 싫어 만든 서비스***
 
+> [App Store에서 버스벨 다운로드](https://apps.apple.com/kr/app/%EB%B2%84%EC%8A%A4%EB%B2%A8/id6759237399)
+
 바로 시작해보자.
