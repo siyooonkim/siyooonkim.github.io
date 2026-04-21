@@ -25,17 +25,45 @@ const groupedPosts = categories
 		</section>
 
 		<nav class="filter-nav">
-			<a href="#all" class="filter-chip active">전체 ({posts.length})</a>
+			<button class="filter-chip active" data-category="all">전체 ({posts.length})</button>
 			{groupedPosts.map((g) => (
-				<a href={`#cat-${g.category}`} class="filter-chip">{g.category} ({g.posts.length})</a>
+				<button class="filter-chip" data-category={g.category}>{g.category} ({g.posts.length})</button>
 			))}
 		</nav>
 
-		<div class="posts-grid" id="all">
-			{posts.map((post, index) => <PostCard post={post} featured={index === 0} />)}
+		<div class="posts-grid">
+			{posts.map((post, index) => (
+				<div class="post-item" data-category={post.data.category}>
+					<PostCard post={post} featured={index === 0} />
+				</div>
+			))}
 		</div>
 	</main>
 </SiteLayout>
+
+<script is:inline>
+	document.addEventListener('DOMContentLoaded', function() {
+		const chips = document.querySelectorAll('.filter-chip');
+		const items = document.querySelectorAll('.post-item');
+
+		chips.forEach(function(chip) {
+			chip.addEventListener('click', function() {
+				chips.forEach(function(c) { c.classList.remove('active'); });
+				chip.classList.add('active');
+
+				const category = chip.getAttribute('data-category');
+
+				items.forEach(function(item) {
+					if (category === 'all' || item.getAttribute('data-category') === category) {
+						item.style.display = '';
+					} else {
+						item.style.display = 'none';
+					}
+				});
+			});
+		});
+	});
+</script>
 
 <style>
 	.posts-shell {
@@ -70,15 +98,23 @@ const groupedPosts = categories
 		padding: 0.4rem 0.75rem;
 		border-radius: 6px;
 		background: transparent;
+		border: none;
 		color: var(--text-muted);
-		text-decoration: none;
 		font-size: 0.78rem;
+		cursor: pointer;
 		transition: all 160ms ease;
 	}
 	.filter-chip:hover,
 	.filter-chip.active {
 		background: rgba(255, 255, 255, 0.06);
 		color: var(--text-strong);
+	}
+
+	.post-item {
+		display: block;
+	}
+	.post-item[style*="display: none"] {
+		display: none !important;
 	}
 
 	/* Grid */
