@@ -1,9 +1,9 @@
 ---
-title: '이커머스 리뷰 어뷰징 시스템 만들기 (어텐션 모델)'
+title: '어텐션 모델 파헤치기'
 description: ''
 pubDate: '2026-04-14'
 category: '딥러닝'
-tags: ['deep-learning', 'nlp', 'attention', 'fraud-detection']
+tags: []
 draft: false
 ---
 
