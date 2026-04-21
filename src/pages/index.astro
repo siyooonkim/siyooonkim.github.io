@@ -4,9 +4,33 @@ import ShelfCard from '../components/ShelfCard.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+function getSeriesKey(title: string) {
+	return title.replace(/\s*\(\d+\)\s*$/, '').trim();
+}
+function getSeriesNum(title: string) {
+	const m = title.match(/\((\d+)\)\s*$/);
+	return m ? parseInt(m[1]) : 0;
+}
+
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft));
+
+const seriesLatest = new Map<string, number>();
+for (const p of allPosts) {
+	const key = getSeriesKey(p.data.title);
+	const val = p.data.pubDate.valueOf();
+	const prev = seriesLatest.get(key) || 0;
+	if (val > prev) seriesLatest.set(key, val);
+}
+
+const posts = allPosts.sort((a, b) => {
+	const keyA = getSeriesKey(a.data.title);
+	const keyB = getSeriesKey(b.data.title);
+	const latestA = seriesLatest.get(keyA) || 0;
+	const latestB = seriesLatest.get(keyB) || 0;
+	if (latestA !== latestB) return latestB - latestA;
+	if (keyA !== keyB) return keyA.localeCompare(keyB);
+	return getSeriesNum(a.data.title) - getSeriesNum(b.data.title);
+});
 
 const sectionOrder = ['AI 관련', '딥러닝', '개발일지', '데이터베이스', '그냥저냥'];
 
