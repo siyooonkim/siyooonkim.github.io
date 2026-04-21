@@ -1,6 +1,6 @@
 ---
 title: 'CS 자동 번역 응답 시스템 만들기 (2) - RAG 구조'
-description: '문서 검색, 프롬프트 구성, 번역 결과 검수 흐름을 어떤 식으로 나눴는지 적어둔 초안입니다.'
+description: ''
 pubDate: '2026-04-12'
 category: '개발일지'
 tags: ['rag', 'llm', 'retrieval', 'customer-support']

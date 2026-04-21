@@ -1,6 +1,6 @@
 ---
 title: '답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (3)'
-description: '공공 API 연동, 어댑터 패턴, 알림 타이머, 서버 재시작 복원까지 백엔드 설계 과정을 정리한 기록입니다.'
+description: ''
 pubDate: '2025-09-13'
 updatedDate: '2025-09-13'
 category: '개발일지'

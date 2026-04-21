@@ -1,6 +1,6 @@
 ---
 title: '이커머스 리뷰 어뷰징 시스템 만들기 (어텐션 모델)'
-description: '리뷰 조작 패턴을 탐지하기 위해 attention 기반 모델을 적용했던 과정을 정리하려는 글의 초안입니다.'
+description: ''
 pubDate: '2026-04-14'
 category: '딥러닝'
 tags: ['deep-learning', 'nlp', 'attention', 'fraud-detection']

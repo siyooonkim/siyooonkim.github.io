@@ -1,6 +1,6 @@
 ---
 title: 'AI 시대의 역설'
-description: 'AI를 잘 쓰는 사람이 살아남는 시대, 아이러니하게도 AI 없이도 잘 생존하는 사람들이다'
+description: ''
 pubDate: '2026-02-08'
 category: 'AI 관련'
 tags: ['ai', 'career', 'essay']
