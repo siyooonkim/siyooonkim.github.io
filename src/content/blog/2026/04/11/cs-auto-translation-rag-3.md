@@ -1,7 +1,7 @@
 ---
 title: 'LINE CS 번역 챗봇 만들기 (3)'
 description: ''
-pubDate: '2026-03-30'
+pubDate: '2026-04-10'
 category: '개발일지'
 tags: []
 draft: false
