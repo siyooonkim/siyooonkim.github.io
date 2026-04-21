@@ -1,7 +1,7 @@
 ---
 title: 'MSA 구조에서 CRM 푸시 개선하기'
 description: ''
-pubDate: '2026-04-10'
+pubDate: '2026-01-10'
 category: '개발일지'
 tags: []
 draft: false
