@@ -44,9 +44,11 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 				</div>
 			</header>
 
-			<div class="hero-image">
-				{heroImage ? <img src={heroImage} alt={title} /> : <PostCover data={{ title, description, pubDate, updatedDate, category, tags, heroImage }} />}
-			</div>
+			{heroImage && (
+				<div class="hero-image">
+					<img src={heroImage} alt={title} />
+				</div>
+			)}
 
 			<div class="article-grid">
 				<div class="prose"><slot /></div>
