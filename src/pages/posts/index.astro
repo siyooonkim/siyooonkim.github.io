@@ -7,6 +7,9 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 	(a, b) => {
 		const dateDiff = b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
 		if (dateDiff !== 0) return dateDiff;
+		const numA = parseInt((a.data.title.match(/\((\d+)\)/) || [])[1] || '0');
+		const numB = parseInt((b.data.title.match(/\((\d+)\)/) || [])[1] || '0');
+		if (numA !== numB) return numA - numB;
 		return a.data.title.localeCompare(b.data.title);
 	},
 );
