@@ -73,49 +73,13 @@ createDate 조건 없음:  14개 (61%)   ❌
 
 전수 조사를 하면서 여러 가지 재미있는(?) 패턴을 발견했다.
 
-### CRITICAL — createDate 조건 자체가 없는 쿼리들
+### createDate 조건 자체가 없는 쿼리들
 
-가장 심각한 건 아예 날짜 필터가 없는 쿼리들이었다.
+가장 심각한 건 아예 날짜 필터가 없는 쿼리들이었다. 엑셀 다운로드 기능에서 ActionLog를 서브쿼리로 사용하면서 아무 필터도 없는 경우, userId + type만 필터하는 경우, id 범위만 필터하는 경우 등 6건이 있었다. 이 쿼리들이 실행될 때마다 수십억 건을 풀스캔하고 있었다.
 
-```javascript
-// store.repository.ts - getBrandListExcelDownload()
-// 서브쿼리에서 ActionLog 전체를 스캔 중...
-// 수십억 건 전체를요...
-```
+### 함수 이름과 동작이 다른 쿼리들
 
-브랜드 리스트 엑셀 다운로드 기능인데, 내부적으로 ActionLog를 서브쿼리로 사용하면서 **아무 필터도 없었다.** 이 쿼리가 실행될 때마다 수십억 건을 풀스캔하고 있었던 것이다.
-
-비슷한 패턴이 5개 레포에 걸쳐 6건이나 있었다.
-
-| 레포 | 함수 | 문제 |
-|------|------|------|
-| admin-backend | `getUserAddAndRemoveCartAmountRows` | userId + type만 필터 |
-| admin-backend | `getUserAddAndRemoveAndClickLikeProductAmountRows` | userId + type만 필터 |
-| admin-backend | `getUserAddAndRemoveAndClickLikeBrandAmountRows` | userId + type만 필터 |
-| monorepo | `findProductCountByActionLogType()` | id 범위만 필터 |
-| monorepo | `getBrandListExcelDownload()` 서브쿼리 | **필터 전혀 없음** |
-| monorepo | `findProcessingProductTracking()` x3 | id 범위만 필터 |
-
-### HIGH — 함수 이름이 사기인 쿼리들
-
-이건 좀 황당했다.
-
-```javascript
-// 함수 이름: getLikeStoreByDateRows
-// "ByDate"라면서요...?
-// 실제 WHERE 절: type = 6 AND userId = ?
-// createDate? 없음. 😇
-```
-
-`getLikeStoreByDateRows`라는 이름에서 "ByDate"는 날짜별로 조회한다는 뜻일 텐데, 실제로는 날짜 필터가 없었다. 비슷한 패턴이 또 있었다.
-
-```javascript
-// 함수 이름: getProductClickByDateRows
-// "ByDate"라면서요... (2)
-// createDate 조건: 역시 없음
-```
-
-아마 처음 만들 때는 날짜 조건이 있었거나, 나중에 추가할 예정이었을 것이다. 하지만 현재는 함수 이름과 실제 동작이 완전히 괴리된 상태였다.
+이건 좀 황당했다. 함수 이름에 "ByDate"가 들어가 있는데 실제 WHERE 절에는 날짜 필터가 없는 쿼리가 있었다. 처음 만들 때는 날짜 조건이 있었거나 나중에 추가할 예정이었겠지만, 현재는 함수 이름과 실제 동작이 완전히 괴리된 상태였다.
 
 ---
 

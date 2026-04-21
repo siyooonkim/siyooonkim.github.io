@@ -2,10 +2,14 @@
 title: '답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (1)'
 description: ''
 pubDate: '2025-09-06'
-category: '개발일지'
+category: '사이드 프로젝트'
 tags: ['project', 'busbell', 'mobile']
 draft: false
 ---
+
+<a href="https://apps.apple.com/kr/app/%EB%B2%84%EC%8A%A4%EB%B2%A8/id6759237399" target="_blank" rel="noreferrer">
+<img src="/images/posts/busbell/appstore-banner.png" alt="App Store에서 버스벨 다운로드" style="border-radius:14px;max-width:100%;" />
+</a>
 
 난 판교에 산다.  
 판교에 직장이 있으면 좋겠지만 아쉽게도 직장은 압구정이다.
@@ -45,7 +49,5 @@ draft: false
 
 이건 나를 위한 서비스다.  
 ***서비스를 통해 수익을 노리는 것도 아니고 그냥 나 불편하기 싫어 만든 서비스***
-
-> [App Store에서 버스벨 다운로드](https://apps.apple.com/kr/app/%EB%B2%84%EC%8A%A4%EB%B2%A8/id6759237399)
 
 바로 시작해보자.

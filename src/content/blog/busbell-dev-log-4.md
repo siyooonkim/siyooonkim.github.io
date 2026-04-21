@@ -2,8 +2,8 @@
 title: '답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (4)'
 description: ''
 pubDate: '2025-09-29'
-category: '개발일지'
-tags: []
+category: '사이드 프로젝트'
+tags: ['project', 'busbell']
 draft: false
 ---
 
@@ -131,41 +131,7 @@ src/api/
 
 ## 전체 플로우
 
-```mermaid
-sequenceDiagram
-    actor 나
-    participant 앱
-    participant 백엔드
-    participant 공공API
-
-    나->>앱: "9507" 검색
-    앱->>백엔드: GET /bus/search
-    백엔드->>공공API: GBIS API
-    공공API-->>백엔드: 노선 데이터
-    백엔드-->>앱: 노선 목록
-    앱-->>나: 검색 결과 표시
-
-    나->>앱: "봇들1단지" 선택
-    앱->>백엔드: GET /route-stops
-    백엔드->>공공API: GBIS API
-    공공API-->>백엔드: 정류장 데이터
-    백엔드-->>앱: 정류장 목록
-    앱-->>나: 정류장 목록 표시
-
-    나->>앱: "5분 전 알림" 설정
-    앱->>백엔드: POST /notifications
-    백엔드->>공공API: ETA 조회
-    공공API-->>백엔드: 20분 후 도착
-
-    Note over 백엔드: 15분 대기...
-
-    백엔드->>공공API: ETA 재조회
-    공공API-->>백엔드: 5분 후 도착
-    백엔드->>앱: FCM 푸시 발송
-    앱-->>나: "390번 버스 곧 도착"
-
-    Note over 나: 집에서 나간다
-```
+![전체 플로우 시퀀스 다이어그램](/images/posts/busbell-4/sequence-diagram.png)
 
 ## 마치며
 
