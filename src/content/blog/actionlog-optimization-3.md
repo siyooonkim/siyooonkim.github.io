@@ -1,9 +1,9 @@
 ---
-title: '수십억 건 테이블 최적화하기 (3)'
+title: '수십억 row 테이블 최적화하기 (3)'
 description: '파티셔닝으로 초 단위까지 끌어내리기 — PK 변경, 버퍼 풀, 무중단 전환'
 pubDate: '2026-04-21'
 category: '데이터베이스'
-tags: ['database', 'mysql', 'partitioning', 'migration', 'buffer-pool', 'performance']
+tags: []
 draft: false
 ---
 
@@ -297,6 +297,6 @@ dual-write를 하면 복사 기간 동안 **새로 들어오는 데이터가 양
 이 글이 비슷한 상황에 처한 누군가에게 도움이 되었으면 한다.
 
 > 시리즈
-> - [수십억 건 테이블 최적화하기 (1)](/blog/db-partitioning-performance)
-> - [수십억 건 테이블 최적화하기 (2)](/blog/actionlog-optimization-2)
-> - **수십억 건 테이블 최적화하기 (3)** ← 현재 글
+> - [수십억 row 테이블 최적화하기 (1)](/blog/db-partitioning-performance)
+> - [수십억 row 테이블 최적화하기 (2)](/blog/actionlog-optimization-2)
+> - **수십억 row 테이블 최적화하기 (3)** ← 현재 글

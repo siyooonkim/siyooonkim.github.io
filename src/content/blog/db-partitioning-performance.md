@@ -1,9 +1,9 @@
 ---
-title: '수십억 건 테이블 최적화하기 (1)'
+title: '수십억 row 테이블 최적화하기 (1)'
 description: 'B-Tree 인덱스로 1시간짜리 쿼리를 51초로 줄인 이야기'
 pubDate: '2026-04-21'
 category: '데이터베이스'
-tags: ['database', 'mysql', 'index', 'b-tree', 'performance', 'optimization']
+tags: []
 draft: false
 ---
 
@@ -273,6 +273,6 @@ console_69  51 s
 다음 편에서는 파티셔닝 전 작업을 진행한다. 쿼리의 WHERE 절에 파티션 키를 반드시 포함시키는 작업이다.
 
 > 시리즈
-> - **수십억 건 테이블 최적화하기 (1)** ← 현재 글
-> - [수십억 건 테이블 최적화하기 (2)](/blog/actionlog-optimization-2) 
-> - [수십억 건 테이블 최적화하기 (3)](/blog/actionlog-optimization-3)
+> - **수십억 row 테이블 최적화하기 (1)** ← 현재 글
+> - [수십억 row 테이블 최적화하기 (2)](/blog/actionlog-optimization-2) 
+> - [수십억 row 테이블 최적화하기 (3)](/blog/actionlog-optimization-3)
