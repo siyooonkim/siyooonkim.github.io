@@ -1,13 +1,13 @@
 ---
 title: '수십억 row 테이블 최적화하기 (3)'
 description: ''
-pubDate: '2026-04-21'
+pubDate: '2025-11-21'
 category: '데이터베이스'
 tags: []
 draft: false
 ---
 
-[1편](/blog/db-partitioning-performance)에서 인덱스를 추가해 1시간 → 51초로 줄였고, [2편](/blog/actionlog-optimization-2)에서는 파티셔닝 전에 쿼리를 정비했다.
+[1편](/blog/actionlog-optimization-1)에서 인덱스를 추가해 1시간 → 51초로 줄였고, [2편](/blog/actionlog-optimization-2)에서는 파티셔닝 전에 쿼리를 정비했다.
 
 23개 쿼리 전부 인덱스를 활용하고, 파티션 프루닝이 동작하는 상태다. 이제 파티셔닝을 적용한다.
 
@@ -295,6 +295,6 @@ dual-write를 하면 복사 기간 동안 **새로 들어오는 데이터가 양
 이 글이 비슷한 상황에 처한 누군가에게 도움이 되었으면 한다.
 
 > 시리즈
-> - [수십억 row 테이블 최적화하기 (1)](/blog/db-partitioning-performance)
+> - [수십억 row 테이블 최적화하기 (1)](/blog/actionlog-optimization-1)
 > - [수십억 row 테이블 최적화하기 (2)](/blog/actionlog-optimization-2)
 > - **수십억 row 테이블 최적화하기 (3)** ← 현재 글

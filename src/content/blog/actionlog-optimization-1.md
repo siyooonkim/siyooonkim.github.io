@@ -1,7 +1,7 @@
 ---
 title: '수십억 row 테이블 최적화하기 (1)'
 description: ''
-pubDate: '2026-04-21'
+pubDate: '2025-11-21'
 category: '데이터베이스'
 tags: []
 draft: false
@@ -272,5 +272,5 @@ console_69  51 s
 
 > 시리즈
 > - **수십억 row 테이블 최적화하기 (1)** ← 현재 글
-> - [수십억 row 테이블 최적화하기 (2)](/blog/actionlog-optimization-2) 
+> - [수십억 row 테이블 최적화하기 (2)](/blog/actionlog-optimization-2)
 > - [수십억 row 테이블 최적화하기 (3)](/blog/actionlog-optimization-3)
