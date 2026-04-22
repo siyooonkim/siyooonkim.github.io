@@ -82,40 +82,39 @@ B-Tree 인덱스에 저장된 값:
 
 쉽게 말해서:
 
-- `createDate >= ?` → 인덱스에 저장된 값을 **그대로** 비교 → 바로 찾아감 ✅
-- `DATE(createDate) >= ?` → 인덱스 값을 **하나하나 변환**한 뒤 비교 → 전부 읽어야 함 ❌
+- `createDate >= ?` → 인덱스에 저장된 값을 **그대로** 비교 → 바로 찾을 수 있음 
+- `DATE(createDate) >= ?` → 인덱스 값을 **하나하나 변환**한 뒤 비교 → 전부 읽어야 함
 
-이걸 데이터베이스 용어로 **Sargable(Search ARGument ABLE)**이라고 한다. 컬럼을 가공하면 인덱스를 못 타고, 값을 가공하면 인덱스를 탄다.
+이걸 데이터베이스 용어로 **Sargable(Search ARGument ABLE)** 이라고 한다. 
+
+컬럼을 가공하면 인덱스를 못 타고, 값을 가공하면 인덱스를 탄다.
 
 ```
-인덱스 못 탐 ❌ (컬럼에 함수를 씌움)
+인덱스 못 탐 (컬럼에 함수를 씌움)
 WHERE DATE(createDate) >= '2025-10-01'
 WHERE YEAR(createDate) = 2025
 
-인덱스 탐 ✅ (컬럼을 그대로 비교)
+인덱스 탐 (컬럼을 그대로 비교)
 WHERE createDate >= '2025-10-01'
 WHERE createDate >= DATE_SUB(NOW(), INTERVAL 30 DAY)
 ```
 
-### 수정 방법
-
-```sql
--- Before ❌ (Non-Sargable)
-WHERE DATE(AL.createDate) >= CURDATE() - INTERVAL 30 DAY
-
--- After ✅ (Sargable)
-WHERE AL.createDate >= CURDATE() - INTERVAL 30 DAY
-  AND AL.createDate < CURDATE() + INTERVAL 1 DAY
-```
-
-미세한 차이처럼 보이지만, 결과는 완전히 다르다. 전자는 인덱스를 무시하고 전체를 스캔하고, 후자는 인덱스를 타고 필요한 범위만 읽는다.
-
+미세한 차이처럼 보이지만, 결과는 완전히 다르다. 
 인덱스를 열심히 추가해놨는데, 쿼리 쪽에서 `DATE()` 함수를 씌워버리면 그 인덱스를 못 쓰는 것이다. 
 
 ---
 
-쿼리 정비를 마치고 이제 파티션 프루닝이 동작하는 상태다. 
-다음 편에서 파티셔닝을 적용해본다. 
+## 쿼리 정비 결과
+
+여러 레포지토리에 흩어져 있는 ActionLog 관련 쿼리를 전부 찾아서 수정했다.
+
+- `createDate` 조건이 아예 없는 쿼리들에 기간 필터 추가
+- `DATE(createDate)` 패턴을 `createDate >= ? AND createDate < ?` 형태로 변경
+- 호출부에서 동적으로 조건을 추가하는 호출 체인 추적해서 확인
+
+수정 후 **전체 쿼리가 인덱스를 활용할 수 있는 상태**가 되었다.
+
+다음 편에서 파티셔닝을 적용한다. 
 
 > 시리즈
 > - [수십억 row 테이블 최적화하기 (1)](/posts/2025/11/21/actionlog-optimization-1)
