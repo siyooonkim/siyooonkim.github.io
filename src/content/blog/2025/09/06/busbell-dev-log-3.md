@@ -8,8 +8,6 @@ tags: ['project', 'busbell', 'backend', 'nestjs', 'fcm', 'adapter-pattern']
 draft: false
 ---
 
-# '버스벨' 개발 (3) _ 백엔드 개발
-
 지난 글에서 PRD와 Figma 디자인까지 만들었다. 
 (어려운 서비스가 아니라서 화면은 3~4개면 충분할 것 같다.)
 
