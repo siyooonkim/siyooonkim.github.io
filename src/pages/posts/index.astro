@@ -33,7 +33,7 @@ const posts = allPosts.sort((a, b) => {
 	return getSeriesNum(a.data.title) - getSeriesNum(b.data.title);
 });
 
-const categories = ['AI 관련', '딥러닝', '개발일지', '데이터베이스', '사이드 프로젝트', '그냥저냥'];
+const categories = ['Essay', '사이드 프로젝트', '개발일지', '데이터베이스', '딥러닝'];
 const groupedPosts = categories
 	.map((cat) => ({
 		category: cat,
