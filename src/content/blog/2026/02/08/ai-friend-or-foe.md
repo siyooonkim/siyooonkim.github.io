@@ -1,8 +1,8 @@
 ---
-title: 'AI 시대의 역설'
+title: '살아가며 느끼는 생각들'
 description: ''
 pubDate: '2026-02-08'
-category: 'AI 관련'
+category: 'Essay'
 tags: ['ai', 'career', 'essay']
 draft: false
 ---
