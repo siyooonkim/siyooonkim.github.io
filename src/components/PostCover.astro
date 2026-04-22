@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { categoryThemes, defaultTheme } from '../utils/categoryThemes';
 
 type PostData = CollectionEntry<'blog'>['data'];
 
@@ -16,16 +17,7 @@ if (!source) {
 	throw new Error('PostCover requires either post or data.');
 }
 
-// 카테고리별 색상 + 패턴 타입
-const categoryThemes: Record<string, { bg: string; accent: string; pattern: string }> = {
-	'AI 관련': { bg: '#1e3a3a', accent: '#4dd0e1', pattern: 'waves' },
-	'딥러닝': { bg: '#1a2f4a', accent: '#64b5f6', pattern: 'grid' },
-	'개발일지': { bg: '#2d3a4f', accent: '#90caf9', pattern: 'dots' },
-	'데이터베이스': { bg: '#3d2f45', accent: '#ce93d8', pattern: 'lines' },
-	'그냥저냥': { bg: '#3a3a2e', accent: '#dce775', pattern: 'circles' },
-};
-
-const theme = categoryThemes[source.category] || { bg: '#2a2a2a', accent: '#9ec5f8', pattern: 'dots' };
+const theme = categoryThemes[source.category] || defaultTheme;
 const titleLines = source.title.split(' ');
 const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(' ');
 const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');

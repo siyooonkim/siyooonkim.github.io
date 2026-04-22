@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
+import { categoryThemes, defaultTheme } from '../utils/categoryThemes';
 
 interface Props {
 	post: CollectionEntry<'blog'>;
@@ -9,16 +10,7 @@ interface Props {
 
 const { post, featured = false } = Astro.props;
 
-// 카테고리별 색상 + 패턴 타입
-const categoryThemes: Record<string, { bg: string; accent: string; pattern: string }> = {
-	'Essay': { bg: '#2a1f1a', accent: '#ffab91', pattern: 'waves' },
-	'사이드 프로젝트': { bg: '#1a2e1a', accent: '#81c784', pattern: 'circles' },
-	'개발일지': { bg: '#1a2340', accent: '#7aa2f7', pattern: 'dots' },
-	'데이터베이스': { bg: '#2d1a3d', accent: '#bb86fc', pattern: 'lines' },
-	'딥러닝': { bg: '#1a3333', accent: '#4dd0e1', pattern: 'grid' },
-};
-
-const theme = categoryThemes[post.data.category] || { bg: '#2a2a2a', accent: '#9ec5f8', pattern: 'dots' };
+const theme = categoryThemes[post.data.category] || defaultTheme;
 const titleLines = post.data.title.split(' ');
 const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(' ');
 const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
