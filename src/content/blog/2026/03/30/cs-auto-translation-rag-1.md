@@ -1,5 +1,5 @@
 ---
-title: 'CS 번역 & 자동응답 챗봇 만들기 (1)'
+title: 'CS 자동응답 챗봇 만들기 (1)'
 description: ''
 pubDate: '2026-03-30'
 category: '개발일지'
@@ -36,7 +36,7 @@ CS팀에서는 GPT를 사용하여 일본어와 한국어를 직접 번역해가
 | 채널 | LINE (일본 시장 메인 메신저) |
 | 번역 | 실시간 양방향 (jp↔ko), AI 번역 (Claude) |
 | 상담 방식 | 봇이 카테고리 분류 → 상담원 연결 |
-| AI 어시스트 | 대화 이력 + 정책 기반 답변 추천, LLM 채팅으로 수정 가능 |
+| AI 어시스트 | 정책 + 과거 유사 응대 + 대화 이력 기반 답변 추천, LLM 채팅으로 수정 가능 |
 | 통계 | 카테고리별, 태그별, 담당자별 분류 → 자동응답 확장 기반 |
 | 알림 | 새 문의 시 Slack 알림 |
 
@@ -44,8 +44,8 @@ CS팀에서는 GPT를 사용하여 일본어와 한국어를 직접 번역해가
 
 ## 유저 플로우
 
-![LINE CS 번역/응대 전체 유저 플로우](/images/posts/cs-auto-translation-rag-1/user-flow.png)
-고객 문의 유입부터 상담원 응답 전송까지의 전체 흐름을 하나의 시퀀스 다이어그램으로 정리했다.
+![CS 자동응답 챗봇 전체 유저 플로우](/images/posts/cs-auto-translation-rag-1/user-flow.png)
+고객 문의 유입부터 상담원 응답 전송까지의 전체 흐름을 하나의 시퀀스 다이어그램으로 정리했다. Claude가 답변 초안을 생성할 때 정책과 과거 유사 응대 이력을 함께 참조한다.
 
 
 ## 카테고리 설계: 왜 2단계인가
@@ -75,9 +75,14 @@ CS팀에서는 GPT를 사용하여 일본어와 한국어를 직접 번역해가
 
 ---
 
-다음 편에서는 이 시스템의 AI 부분을 설계한다. RAG를 검토했지만 오버스펙이었고, 더 단순한 구조를 선택한 이유를 다룬다.
+## 아키텍처 전체 구조
+
+LINE Webhook의 발신 IP가 고정되지 않아 VPC 보안 그룹에서 직접 허용할 수 없었다. 그래서 앞단에 API Gateway를 두고, Webhook 요청을 API Gateway에서 받아 ALB로 프록시하는 구조로 만들었다.
+
+![아키텍처 전체 구조](/images/posts/cs-auto-translation-rag-2/architecture.png)
+
+다음 편에서는 이 시스템의 AI 부분을 설계한다. 
 
 > 시리즈
-> - **LINE CS 번역 챗봇 만들기 (1)** ← 현재 글
-> - [LINE CS 번역 챗봇 만들기 (2)](/posts/2026/03/30/cs-auto-translation-rag-2)
-> - [LINE CS 번역 챗봇 만들기 (3)](/posts/2026/03/30/cs-auto-translation-rag-3)
+> - **CS 자동응답 챗봇 만들기 (1)** ← 현재 글
+> - [CS 자동응답 챗봇 만들기 (2)](/posts/2026/03/30/cs-auto-translation-rag-2)
