@@ -63,9 +63,7 @@ BusApiService (파사드)
   └── GyeonggiAdapter → 경기 GBIS API 호출
 ```
 
- 
-
-여기서 핵심은 **추상화**다.
+### 여기서 핵심은 **추상화**다.
 
 서울 API는 응답이 JSON인데 경기도는 XML이다. 
 필드명도 서울은 `busRouteId`, 경기도는 `routeId`다. 
