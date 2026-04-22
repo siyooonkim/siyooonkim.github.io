@@ -50,7 +50,7 @@ Onboarding → Search → RouteDetail → AlarmList
 
 ### 검색 화면
 
-<img src="/images/posts/busbell-4/search.png" alt="검색 화면" style="max-width: 320px;" />
+<img src="/images/posts/busbell-4/search.png" alt="검색 화면" style="max-width: 220px;" />
 
 메인 화면이다. 버스 번호를 입력하면 된다. 자주 찾는 버스를 바로 검색할 수 있도록 최근 검색한 버스 번호를 카드로 보여준다. 9507, 3213, 9401, M4403 — 전부 내가 매일 타거나 환승하는 노선들이다.
 
