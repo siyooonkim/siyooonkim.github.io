@@ -4,7 +4,7 @@ description: ''
 pubDate: '2026-01-10'
 category: '개발일지'
 tags: []
-draft: false
+draft: true
 ---
 
 [이전 편](/posts/2026/01/10/crm-push-improvement-1)에서 문제, 스펙, Redis/DB 저장 구조를 정리했다. 이번 편에서는 분산 락, 3일 체인 동작, 예외 처리를 다룬다.
