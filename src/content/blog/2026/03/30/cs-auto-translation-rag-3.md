@@ -7,7 +7,7 @@ tags: []
 draft: false
 ---
 
-[1편](/posts/2026/04/13/cs-auto-translation-rag-1)에서 요구사항을 정의하고, [2편](/posts/2026/04/12/cs-auto-translation-rag-2)에서 RAG 대신 DB 정책 주입 방식을 선택했다. 이번 편에서는 DB 모델 설계와, 데이터가 어떻게 쌓여서 자동응답으로 확장되는지를 다룬다.
+[1편](/posts/2026/03/30/cs-auto-translation-rag-1)에서 요구사항을 정의하고, [2편](/posts/2026/03/30/cs-auto-translation-rag-2)에서 RAG 대신 DB 정책 주입 방식을 선택했다. 이번 편에서는 DB 모델 설계와, 데이터가 어떻게 쌓여서 자동응답으로 확장되는지를 다룬다.
 
 ---
 
@@ -160,6 +160,6 @@ RAG를 처음부터 도입하지 않은 이유도 여기에 있다. 데이터가
 RAG 같은 거창한 구조 없이도, 카테고리 기반 정책 주입 + 데이터 축적만으로 실용적인 CS 봇을 만들 수 있었다. 정책이 수백 개로 늘어나면 그때 RAG를 검토하면 된다. 지금은 이 구조로 충분하다.
 
 > 시리즈
-> - [LINE CS 번역 챗봇 만들기 (1)](/posts/2026/04/13/cs-auto-translation-rag-1)
-> - [LINE CS 번역 챗봇 만들기 (2)](/posts/2026/04/12/cs-auto-translation-rag-2)
+> - [LINE CS 번역 챗봇 만들기 (1)](/posts/2026/03/30/cs-auto-translation-rag-1)
+> - [LINE CS 번역 챗봇 만들기 (2)](/posts/2026/03/30/cs-auto-translation-rag-2)
 > - **LINE CS 번역 챗봇 만들기 (3)** ← 현재 글

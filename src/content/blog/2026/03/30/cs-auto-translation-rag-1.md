@@ -79,5 +79,5 @@ CS팀에서는 GPT를 사용하여 일본어와 한국어를 직접 번역해가
 
 > 시리즈
 > - **LINE CS 번역 챗봇 만들기 (1)** ← 현재 글
-> - [LINE CS 번역 챗봇 만들기 (2)](/posts/2026/04/12/cs-auto-translation-rag-2)
-> - [LINE CS 번역 챗봇 만들기 (3)](/posts/2026/04/11/cs-auto-translation-rag-3)
+> - [LINE CS 번역 챗봇 만들기 (2)](/posts/2026/03/30/cs-auto-translation-rag-2)
+> - [LINE CS 번역 챗봇 만들기 (3)](/posts/2026/03/30/cs-auto-translation-rag-3)

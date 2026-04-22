@@ -7,7 +7,7 @@ tags: []
 draft: false
 ---
 
-[이전 편](/posts/actionlog-optimization-1)에서 인덱스를 추가해 1시간 → 51초로 줄였다. 다음 단계는 파티셔닝이다.
+[이전 편](/posts/2025/11/21/actionlog-optimization-1)에서 인덱스를 추가해 1시간 → 51초로 줄였다. 다음 단계는 파티셔닝이다.
 
 그런데 파티셔닝 전에 먼저 해결해야 할 문제가 있었다. 이걸 건너뛰었으면, 파티셔닝은 **오히려 성능을 나빠지게 만들었을 것이다.**
 
@@ -210,6 +210,6 @@ WHERE AL.createDate >= CURDATE() - INTERVAL 30 DAY
 쿼리 정비를 마쳤다. 23개 쿼리 전부 인덱스를 활용하고, 파티션 프루닝이 동작하는 상태다. 다음 편에서 파티셔닝을 적용한다.
 
 > 시리즈
-> - [수십억 row 테이블 최적화하기 (1)](/posts/actionlog-optimization-1)
+> - [수십억 row 테이블 최적화하기 (1)](/posts/2025/11/21/actionlog-optimization-1)
 > - **수십억 row 테이블 최적화하기 (2)** ← 현재 글
-> - [수십억 row 테이블 최적화하기 (3)](/posts/actionlog-optimization-3)
+> - [수십억 row 테이블 최적화하기 (3)](/posts/2025/11/21/actionlog-optimization-3)

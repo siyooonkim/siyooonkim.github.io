@@ -1,8 +1,8 @@
 ---
 title: '답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (3)'
 description: ''
-pubDate: '2025-09-13'
-updatedDate: '2025-09-13'
+pubDate: '2025-09-06'
+updatedDate: '2025-09-06'
 category: '사이드 프로젝트'
 tags: ['project', 'busbell', 'backend', 'nestjs', 'fcm', 'adapter-pattern']
 draft: false

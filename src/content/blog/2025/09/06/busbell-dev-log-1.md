@@ -7,9 +7,15 @@ tags: ['project', 'busbell', 'mobile']
 draft: false
 ---
 
-<a href="https://apps.apple.com/kr/app/%EB%B2%84%EC%8A%A4%EB%B2%A8/id6759237399" target="_blank" rel="noreferrer">
-<img src="/images/posts/busbell/appstore-banner.png" alt="App Store에서 버스벨 다운로드" style="border-radius:14px;max-width:100%;" />
-</a>
+## 완성본: 버스벨
+
+답답해서 직접 만든 버스 도착 알림 앱이다. 지정한 정류장에 버스가 가까워지면 알림을 보내준다. 더 이상 정류장에서 멍하니 기다릴 필요 없다.
+
+<img src="/images/posts/busbell/appstore-banner.png" alt="버스벨 앱 소개" style="border-radius:14px;max-width:100%;" />
+
+<a href="https://apps.apple.com/kr/app/%EB%B2%84%EC%8A%A4%EB%B2%A8/id6759237399" target="_blank" rel="noreferrer" style="display:inline-block;margin-top:12px;padding:10px 20px;background:#000;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">App Store에서 다운로드</a>
+
+---
 
 난 판교에 산다.  
 판교에 직장이 있으면 좋겠지만 아쉽게도 직장은 압구정이다.

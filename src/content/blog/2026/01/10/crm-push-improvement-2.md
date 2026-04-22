@@ -7,7 +7,7 @@ tags: []
 draft: false
 ---
 
-[이전 편](/posts/2026/04/17/flarelane-redis-lock-retrospective)에서 문제, 스펙, Redis/DB 저장 구조를 정리했다. 이번 편에서는 분산 락, 3일 체인 동작, 예외 처리를 다룬다.
+[이전 편](/posts/2026/01/10/flarelane-redis-lock-retrospective)에서 문제, 스펙, Redis/DB 저장 구조를 정리했다. 이번 편에서는 분산 락, 3일 체인 동작, 예외 처리를 다룬다.
 
 ---
 
@@ -280,5 +280,5 @@ Producer → Topic (Partitions) → Consumer Group
 gap 정의, 발송 시점 재계산, 원복 판단, 재발송 조건. 이것들이 확정되고 나서야 구현이 시작됐다. 롤백이 불가능한 외부 작업(푸시 발송)을 다룰 때는 완벽한 차단보다 관측 가능성이 중요하다. 분산 락으로 99%를 막고, 나머지 1%는 Slack 알림으로 잡는 구조가 현실적이었다.
 
 > 시리즈
-> - [MSA 구조에서 CRM 푸시 개선하기 (1)](/posts/2026/04/17/flarelane-redis-lock-retrospective)
+> - [MSA 구조에서 CRM 푸시 개선하기 (1)](/posts/2026/01/10/flarelane-redis-lock-retrospective)
 > - **MSA 구조에서 CRM 푸시 개선하기 (2)** ← 현재 글
