@@ -31,7 +31,6 @@ const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
 				<img src={post.data.heroImage} alt={post.data.title} class="cover-image" />
 			) : (
 				<>
-					<div class="cover-decoration" data-pattern={theme.pattern}></div>
 					<div class="cover-panel">
 						<span class="panel-category">{post.data.category}</span>
 						<div class="panel-title">
