@@ -59,14 +59,17 @@ BusApiService (파사드)
   └── GyeonggiAdapter → 경기 GBIS API 호출
 ```
 
-### 여기서 핵심은 **추상화**다.
+### 핵심은 **추상화**다.
+서울 API와 경기도 API는 형태가 많이 다르다. <br>
+서울은 JSON을 사용하지만, 경기도는 XML을 사용하고   
+필드명도 `busRouteId`와 `routeId`처럼 서로 다르다.  
+도착 시간 역시 서울은 초 단위, 경기도는 분 단위로 제공된다. <br>
 
-서울 API는 응답이 JSON인데 경기도는 XML이다.<br>
-필드명도 서울은 `busRouteId`, 경기도는 `routeId`다.<br>
-도착 시간도 서울은 초 단위, 경기도는 분 단위다.<br>
+이런 차이를 호출하는 쪽에서 모두 처리하게 하면 코드가 복잡해진다.  <br>
+그래서 이 차이를 내부에서 흡수하도록 설계했다. <br>
 
-이런 차이를 호출하는 쪽에서 알 필요 없도록 설계하는게 중요하다고 판단했고,<br>
-`BusSearchResult`, `ArrivalInfo`, `LiveData` 같은 **공통 인터페이스**를 먼저 정의하여 각 어댑터가 자기 지역 API 응답을 이 공통 형태로 변환하도록 했다.<br>
+`BusSearchResult`, `ArrivalInfo`, `LiveData` 같은 공통 인터페이스를 먼저 정의하고,  <br>
+각 어댑터가 지역별 API 응답을 이 형태로 변환하도록 구성했다. <br>
 
 ```ts
 interface ArrivalInfo {
@@ -81,8 +84,7 @@ interface ArrivalInfo {
 ```
 
 **몰라도 되는 것은 몰라도 되게 만드는 것.**
-
-핵심은 호출하는 쪽에서는 이런 차이를 알 필요가 없도록 만드는 것이다. 
+핵심은 **호출하는 쪽에서는 이런 차이를 알 필요가 없도록 만드는 것**이다. <br>
 
 경기도 어댑터는 `predictTime1`을 그대로 넣고, 서울 어댑터는 초 단위 응답을 60으로 나눠 넣는다.<br>
 `BusApiService`는 `cityCode`만 보고 어떤 어댑터를 쓸지 결정한다.<br>
