@@ -9,9 +9,7 @@ draft: false
 
 ## 버스벨 (Busbell)
 
-<img src="/images/posts/busbell/appstore-banner.png" alt="버스벨 앱 소개" style="border-radius:14px;max-width:320px;" />
-
-<a href="https://apps.apple.com/kr/app/%EB%B2%84%EC%8A%A4%EB%B2%A8/id6759237399" target="_blank" rel="noreferrer" style="display:inline-block;margin-top:12px;padding:10px 20px;background:#000;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">App Store에서 다운로드</a>
+<a href="https://apps.apple.com/kr/app/%EB%B2%84%EC%8A%A4%EB%B2%A8/id6759237399" target="_blank" rel="noreferrer" style="display:inline-block;margin-top:12px;padding:12px 24px;background:#000;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:1.05rem;">App Store에서 다운로드</a>
 
 ---
 
