@@ -2,179 +2,136 @@
 title: '답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (3)'
 description: ''
 pubDate: '2025-09-06'
-updatedDate: '2025-09-06'
 category: '사이드 프로젝트'
-tags: ['project', 'busbell', 'backend', 'nestjs', 'fcm', 'adapter-pattern']
+tags: ['project', 'busbell']
 draft: false
 ---
 
-지난 글에서 PRD와 Figma 디자인까지 만들었다. 
-(어려운 서비스가 아니라서 화면은 3~4개면 충분할 것 같다.)
+앱 개발은 생각보다 빠르게 진행됐다. 화면도 많지 않고, 거의 와이어프레임 수준을 그대로 넣었기 때문에. 
+디자인 패턴은 재사용성을 고려해서 Atomic 패턴으로 구성했다.
 
-## 💁 뭘 만들어야 하는가
+## React Native + React Query
 
-버스벨의 백엔드의 요구 사항을 정리해보았다. 
+앞에서도 언급했지만, 처음에는 Swift로 iOS 네이티브 앱을 만들까 잠깐 고민했다. 
+근데 언젠가(?) Android도 지원하고 싶은 욕심이 있었고, 이런 경우 개발 생산성을 극대화시킬 수 있을 것 같아서 RN을 선택했다.
 
-> 공공 API에서 버스 위치를 가져오고, 유저가 설정한 조건에 맞으면 푸시 알림을 쏜다.
+또한 React Query를 함께 사용했는데, 확실히 RN과 호환도 잘될 뿐더러 서버 상태 캐싱, 로딩/에러 처리, 리페칭이 전부 알아서 되니 편했다. 
 
-한 줄로 쓰면 단순한데, 쪼개보면 네 덩어리다.
+## Tailwind 걷어낸 이유
 
-1. **버스 정보 조회** — 공공데이터 API에서 노선, 정류장, 실시간 위치, ETA를 가져온다
-2. **알림 예약/관리** — 유저가 설정한 알림을 DB에 저장하고 상태를 관리한다
-3. **타이머** — 버스 도착 시간을 추적하다가, 조건이 충족되면 푸시를 발송한다
-4. **인증** — 회원가입, 로그인, JWT 토큰, FCM 토큰 관리
+과거 Next.js에서 Tailwind 쓸 때 생산성이 좋았던 경험을 바탕으로 Tailwind를 세팅했다. 
 
-이 네 가지를 NestJS 모듈 단위로 나눠서 하나씩 만들어가기로 했다.
+근데 막상 써보니 문제가 있었다. 
 
-```text
-src/
-├── auth/            # 인증 (회원가입, 로그인, JWT)
-├── busapi/          # 버스 정보 (검색, 노선, ETA)
-│   ├── adapters/    # 서울/경기 어댑터
-│   ├── services/    # 파사드 서비스
-│   └── interfaces/  # 공통 인터페이스
-├── notifications/   # 알림 (예약, 타이머, FCM 발송)
-│   ├── services/
-│   │   ├── notification.service.ts  # 예약 CRUD
-│   │   ├── timer.service.ts         # ETA 기반 폴링
-│   │   └── fcm.service.ts           # Firebase 푸시
-│   └── entities/
-├── users/           # 유저 프로필, 탈퇴
-└── databases/       # DB 설정, 마이그레이션
+웹에서는 브라우저 DevTools로 요소를 클릭하면 어떤 Tailwind 클래스가 적용됐는지 바로 보이는데, RN에서는 그런 도구가 없다. `className="flex-1 px-4 mt-2"` 같은 게 실제로 어떤 스타일로 변환됐는지 확인하려면 로그를 찍거나 하나씩 빼봐야 했다. 
+
+곧바로 Tailwind를 통째로 걷어내고 React Native 기본 StyleSheet을 사용했다. 
+
+## 화면 구성
+
+PRD에서 화면 3~4개면 된다고 했는데, 진짜로 4개다.
+
+```
+Onboarding → Search → RouteDetail → AlarmList
 ```
 
-## 💁 공공데이터 API — TAGO에서 시작해서 어댑터 패턴까지
+| 화면 | 하는 일 |
+|------|--------|
+| Search | 버스 번호 입력 → 노선 선택 |
+| RouteDetail | 정류장 목록 보고 → 알림 설정 |
+| AlarmList | 내 알림 확인/취소 |
+| Onboarding | 첫 진입 시 서비스 소개 |
 
-버스 실시간 위치 데이터는 [공공데이터포털](https://data.go.kr)에서 가져온다.
+사용자 입장에서 검색 → 선택 → 알림 설정, 3스텝이면 끝이다. 
+물론 추가하고 싶은 기능들이 한 두개가 아니지만, 예전에 소개팅 앱을 만들다가 지쳐서 포기했던 기억을 바탕으로, 
+처음부터 욕심내지 않고 mvp를 구현하는 데 집중했다.
 
-- 서울: TOPIS API — 서울시 직접 운영
-- 경기: GBIS v2 API — 경기도 직접 운영
+실제 화면을 보면 이렇다.
 
+### 검색 화면
 
-문제는 이 두 API가 완전히 다른 서비스라는 점이었다. URL도 다르고, 응답 필드명도 다르고, 에러 코드도 다르다. 
-처음에는 `if` 문으로 분기 처리를 할까 했다가, 
-코드가 금방 지져분해지는 경험을 토대로,, 어댑터 패턴으로 분리했다.
+<img src="/images/posts/busbell-4/search.png" alt="검색 화면" style="max-width: 220px;" />
 
-```text
-BusApiService (파사드)
-  ├── SeoulAdapter    → 서울 TOPIS API 호출
-  └── GyeonggiAdapter → 경기 GBIS API 호출
+메인 화면이다. 버스 번호를 입력하면 된다. 자주 찾는 버스를 바로 검색할 수 있도록 최근 검색한 버스 번호를 카드로 보여준다. 9507, 3213, 9401, M4403 — 전부 내가 매일 타거나 환승하는 노선들이다.
+
+### 검색 결과
+
+<img src="/images/posts/busbell-4/search-result.png" alt="검색 결과" style="max-width: 220px;" />
+
+버스 번호를 입력하면 해당 노선 정보가 바로 뜬다. 기점/종점, 지역, 버스 유형이 표시된다. 
+
+### 노선 상세 + 알림 설정
+
+<img src="/images/posts/busbell-4/route-detail.png" alt="노선 상세" style="max-width: 220px;" />
+
+노선을 선택하면 정류장 목록이 나오고, 정류장을 탭하면 바텀시트로 알림 설정 화면이 올라온다.
+
+현재 ETA를 보여주면서 "도착 몇 분 전에 알려드릴까요?"라고 묻는다. 1분, 2분 같은 프리셋과 직접 입력이 있다. 
+만약 ETA보다 큰 값을 입력하면 "도착 예정 시간(3분)보다 큽니다" 같은 경고 토스트를 뜨도록 설정했다. 
+
+### 알림 내역
+
+<img src="/images/posts/busbell-4/alarm-list.png" alt="알림 내역" style="max-width: 220px;" />
+
+설정한 알림 목록이다. 버스 번호, 정류장, 도착 예정 시간, 알림 시점이 한눈에 보이고 취소도 가능하다. 심플하게 만들었다. 여기에 기능을 더 넣고 싶을 예정이다. 
+
+## API 레이어 (관심사 분리)
+
+API 호출 코드를 화면 컴포넌트에 직접 넣는건 피하고 `src/api/` 폴더에 도메인별로 나눴다.
+
+```
+src/api/
+├── client.ts           # Axios 인스턴스, baseURL, 인터셉터
+├── authApi.ts          # 로그인, 회원가입
+├── busApi.ts           # 버스 검색, 노선 조회, ETA
+├── notificationApi.ts  # 알림 생성, 조회, 취소
+└── userApi.ts          # 프로필
 ```
 
-### 여기서 핵심은 **추상화**다.
+호출 함수를 React Query 훅으로 감쌌다. 
+최대한 나중에 유지보수하기 편하도록 만드는데 집중했다. 
 
-서울 API는 응답이 JSON인데 경기도는 XML이다. 
-필드명도 서울은 `busRouteId`, 경기도는 `routeId`다. 
-도착 시간도 서울은 초 단위, 경기도는 분 단위다. 
+## 푸시 알림
 
-이런 차이를 호출하는 쪽에서 알 필요 없도록 설계하는게 중요하다고 판단했고, `BusSearchResult`, `ArrivalInfo`, `LiveData` 같은 **공통 인터페이스**를 먼저 정의하여 각 어댑터가 자기 지역 API 응답을 이 공통 형태로 변환하도록 했다.
-
-```ts
-interface ArrivalInfo {
-  routeId: string;
-  routeName: string;
-  arrivals: {
-    vehicleNo: string;
-    remainingStops: number;
-    etaMinutes: number;
-  }[];
-}
+```
+390번 버스 곧 도착
+벽산아파트에 약 2분 후 도착 예정입니다.
 ```
 
-**몰라도 되는 것은 몰라도 되게 만드는 것.**
+흐름 자체는 단순하다.
+알림 타이머가 조건을 충족하면, Firebase Cloud Messaging(FCM)을 통해 푸시를 쏜다. 
 
-경기도 어댑터는 `predictTime1`을 그대로 넣고, 서울 어댑터는 초 단위 응답을 60으로 나눠 넣는다. `BusApiService`는 `cityCode`만 보고 어떤 어댑터를 쓸지 결정한다. 결과적으로 앱은 서울/경기를 구분할 필요 없이 같은 형태의 데이터를 받는다.
+1. 앱 시작 → Firebase에서 FCM 토큰 발급
+2. 로그인할 때 이 토큰을 백엔드 `User` 테이블에 저장
+3. 백엔드에서 ETA 조건 충족 → FCM으로 푸시 발송
+4. 앱에서 수신
 
-
-
-### Redis로 API 호출 줄이기
-
-실시간 버스 위치같이 계속 변하는 데이터는 매번 API를 호출해야 하지만, 
-**노선 정보**나 **정류장 목록**처럼 자주 안 바뀌는 데이터는 캐싱해서 **공공 API 호출을 줄일 수 있다**.
-
-노선 개요는 6시간 TTL, 정류장 목록은 24시간 TTL로 Redis에 캐싱했다. 
-같은 노선을 여러 유저가 검색해도 공공 API는 한 번만 호출되고, 이후는 Redis에서 바로 꺼내주는 구조를 만들었다. 
+개발 환경에서는 잘 되던 푸시가 프로덕션에서만 안 오는 문제로 한참 삽질했다. 원인은 단순했는데, Firebase 콘솔에서 프로덕션용 APNs 인증 키를 등록하지 않았기 때문이었다. 개발 환경은 sandbox APNs를 쓰고 프로덕션은 production APNs를 쓰는데, 이걸 놓치면 빌드는 되는데 푸시만 안 온다.
 
 
-## 💁 핵심 로직: 알림 타이머
+## 전체 플로우
 
-버스벨에서 가장 고민을 많이 한 부분이다.
+![전체 플로우 시퀀스 다이어그램](/images/posts/busbell-4/sequence-diagram.png)
 
-알림마다 독립적인 타이머를 돌리되, **ETA와 알림 조건의 차이에 따라 폴링 주기를 조절하는 방식**으로 바꿨다.
+## 마치며
 
-예를 들어 "5분 전 알림"을 설정했고 현재 버스 ETA가 20분이면:
+공공 API 연동, 실시간 폴링, FCM 푸시 파이프라인, React Native 빌드, 앱스토어 출시까지 한 사이클을 전부 끝낼 수 있었다. 
 
-- gap이 15분 → 10분 뒤에 다시 확인
-- gap이 8분 → 5분 뒤에 다시 확인
-- gap이 3분 → 1분 뒤에 다시 확인
-- 조건 충족 → FCM 발송
+아직 고쳐야 할 부분도 많고, UI/UX 개선 그리고 즐겨찾기 기능, 지도 기능, 지하철 지원 등 추가하고 싶은 기능도 많다.
 
-쉽게 말해, gap이 클 때는 느슨하게, 가까워질수록 촘촘하게 체크한다. 
-이렇게 하면 불필요한 API 호출이 확 줄어들고, 공공 API 호출 제한도 아낄 수 있다.
+예상치 못한 부분에서 병목이 생겼고, 그런 상황들이 날 계속 지치게 만들었다. 
 
+이 과정에서 깨달은 건 꼭 완벽할 필요 없다는 점이다. 
 
-### 1) 알림 예약 흐름
+![완벽주의](/images/posts/busbell-4/perfectionism.png)
 
-![알림 예약 흐름](/images/posts/busbell-3/notification-reserve-flow.png)
-
-유저가 알림을 예약하면 바로 저장하는 게 아니라, 먼저 현재 ETA를 검증한다. 
-버스가 이미 3분 후 도착인데 "5분 전 알림"을 설정하면 의미가 없기 때문이다.
-
-### 2) 타이머 폴링 → 푸시 발송
-
-![타이머 폴링과 푸시 발송 흐름](/images/posts/busbell-3/polling-push-flow.png)
-
-### 3) FCM 실패 시 재시도
-
-![FCM 실패 재시도 흐름](/images/posts/busbell-3/fcm-retry-flow.png)
-
-FCM 발송은 네트워크 문제나 토큰 만료 등으로 실패할 수 있다. 
-그래서 최대 3회, 30초 간격으로 재시도하고, 3번 모두 실패하면 `Expired` 처리했다.
+'그냥 넘어가자'라는 유혹과 어느 정도 타협하면서 앞으로 나아가는 것도 분명 중요한 부분이다. 
+모든 사이클을 한번 돌아보는 것, 완벽하다고 생각할때까지 하나만 파는 것보다 낫다. 
+이걸 받아들이지 못하면, 즐거운 마음으로 시작한 프로젝트가 스트레스로 이어지기 때문이다. 
 
 
-### 4) 서버 재시작 시 타이머 복원
 
-Railway 같은 플랫폼은 서버가 언제든 재시작될 수 있다. 
-(실제로 최대 요금 limit에 걸려 스스로 서버를 중지한 적이 있었다.)
-
-이런 경우 메모리에만 타이머를 들고 있으면 재시작 순간 예약된 알림이 전부 날아간다.
-
-그래서 애플리케이션이 부트스트랩되는 시점에 DB의 `Reserved` 상태 알림을 조회해 타이머를 복원하도록 했다.
-
-```ts
-async onModuleInit() {
-  const reserved = await this.notificationRepo.find({
-    where: { status: NotificationStatus.Reserved },
-  });
-
-  for (const noti of reserved) {
-    await this.startPollingForNotification(noti.id, randomUUID());
-  }
-}
-```
-
-물론 Redis와 메시지 큐를 사용하여 더 견고한 구조를 만들 수 있지만,
-1인 사이드 프로젝트에서는 이 정도가 적절한 선이라고 판단한다. 
-
-## 💁 API 설계
-
-Swagger로 문서화까지 정리해뒀다. 주요 엔드포인트는 아래와 같다.
-
-| 메서드 | 경로 | 설명 |
-| --- | --- | --- |
-| GET | `/bus/search?keyword=9507` | 버스 번호 검색 |
-| GET | `/bus/overview` | 노선 개요 |
-| GET | `/bus/route-stops` | 노선별 정류장 목록 |
-| GET | `/bus/realtime-info` | 실시간 차량 위치 |
-| GET | `/bus/eta` | 특정 정류장 도착 ETA |
-| POST | `/notifications` | 알림 예약 생성 |
-| GET | `/notifications` | 내 활성 알림 목록 |
-| DELETE | `/notifications/:id` | 알림 취소 |
-
-인증은 JWT access + refresh 토큰 구조로 구성했고, 로그인 시 FCM 토큰도 함께 저장했다. 
-
-(같은 계정으로 여러 기기에서 알림을 받을 수 있다는 점을 고려했지만, 실제 내가 여러 기기로 알림을 받을 필요가 있을까라는 생각도 든다.)
-
-## 💁 다음 글에서는
-
-백엔드 API가 완성됐으니, 이제 이 API를 호출할 앱을 만들 차례다. 다음 글에서는 React Native로 버스 검색 → 노선 상세 → 알림 설정까지의 화면을 어떻게 구현했는지 정리할 예정이다.
+> 시리즈
+> - [답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (1)](/posts/2025/09/06/busbell-dev-log-1)
+> - [답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (2)](/posts/2025/09/06/busbell-dev-log-2)
+> - **답답해서 직접 만든 버스 알림 앱 (버스벨) 개발 기록 (3)** ← 현재 글
