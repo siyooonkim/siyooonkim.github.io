@@ -9,7 +9,7 @@ draft: false
 
 ## 버스벨 (Busbell)
 
-<img src="/images/posts/busbell/appstore-banner.png" alt="버스벨 앱 소개" style="border-radius:14px;max-width:100%;" />
+<img src="/images/posts/busbell/appstore-banner.png" alt="버스벨 앱 소개" style="border-radius:14px;max-width:320px;" />
 
 <a href="https://apps.apple.com/kr/app/%EB%B2%84%EC%8A%A4%EB%B2%A8/id6759237399" target="_blank" rel="noreferrer" style="display:inline-block;margin-top:12px;padding:10px 20px;background:#000;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">App Store에서 다운로드</a>
 
@@ -25,25 +25,18 @@ draft: false
 <img src="/images/posts/busbell/arrival-delay.png" alt="버스 정류장 전광판" style="max-width: 320px;" />
 
 <br>
-보통 오전 9시 30분까지 출근을 목표로 한다. (자율 출근은 정말 좋은 복지라고 생각한다.)  <br>
-버스는 대략 1시간 정도 소요되기 때문에 난 오전 8시 30분 이전에 출발하는 버스를 타야 한다.  <br>
-내가 타는 버스는 매일 오전 8시 12분에 도착한다고 나와 있다. <br>
-집에서 정류장까지 약 5분 정도 소요되기 때문에 난 매일 아침 8시 5분쯤 집에서 나가 버스를 탄다. <br>
+보통 9시 30분까지 출근을 목표로 한다.<br>
+버스는 약 1시간 정도 걸리고, 집에서 정류장까지는 5분 정도다.<br>
 
-여기 한 가지 문제가 있었는데,
-**기상 상황, 요일, 갑작스런 사고 그리고 원인 모를 이유** 때문에 교통 상황이 달라져 도착 예정 시간이 종종 변동된다는 것이다.<br>
+문제는 버스 도착 시간이 교통 상황에 따라 크게 변동된다는 점이었다.<br>
 
-도착 예정 시간 편차가 5분 이내면 그러려니 하겠지만 20분씩 되는 게 문제다. <br>
+- 늦게 와서 오래 기다리거나 예상보다 빨리 와서 놓치는 일이 반복됐다<br>
 
-8시 10분 도착 예정이던 버스가 20분을 넘게 늦게 와서 한참을 기다리다 회사를 늦게 간 적도 있고, 8시 20분 도착 예정이라던 버스가 너무 일찍 도착하여 버스를 놓쳐버린 적도 있다. <br>
+결국 매일 아침마다 지도 앱을 열어 도착 시간을 계속 확인해야 했고,<br>
+이 과정이 번거로웠다.<br>
 
-버스 도착 예정 시간이 갑작스럽게 늘어나거나 줄어드는 게 짜증났다. <br>
-특히 요즘같이 덥고 습한 장마철에는 더 그렇다. <br>
-
-매일 아침마다 지도 앱에 들어가 버스 시간을 확인하는 것도 번거로웠고, 계속 신경 쓰고 있는게 귀찮았다. <br>
-
-차라리 도착 5분 전에 알림을 보내주는 기능이 있으면 좋겠다는 생각이 들었고, <br>
-직접 만들어보았다. 
+차라리 도착 5분 전에만 알림을 받을 수 있으면 좋겠다는 생각이 들었고,<br>
+직접 만들어보았다.<br>
 
 ---
 
@@ -105,8 +98,9 @@ MVP 개발 단계에서는 P0만 개발할 계획이다.<br>
 
 ![버스벨 Figma 화면 설계](/images/posts/busbell-2/figma.png)
 
-디자인에 오래 잡고 있어도 나의 감각으로는 한계가 있다고 판단했기 때문에,<br>
+나의 감각으로는 디자인에 오래 잡고 있어도 한계가 있다고 판단했기 때문에,<br>
 필요한 화면만 깔끔하고 빠르게 만드는 데에 포커스를 두었다.<br>
+피그마로 작업을 진행했는데, 굉장히 
 
 ### 💁 기술 스택
 
