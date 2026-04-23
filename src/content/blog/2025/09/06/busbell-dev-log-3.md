@@ -21,11 +21,7 @@ RN에서는 이를 확인할 수 있는 도구가 없다.<br>
 결국 Tailwind를 통째로 걷어내고 다시 StyleSheet을 사용했다.<br> 
 
 ## 화면 구성
-화면은 총 4가지로 구성했다.<br> 
-
-```
-Onboarding → Search → RouteDetail → AlarmList
-```
+화면은 아래와 같이 4개로 구성했다.<br> 
 
 | 화면 | 하는 일 |
 |------|--------|
