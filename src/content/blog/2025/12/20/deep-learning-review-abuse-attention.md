@@ -274,4 +274,4 @@ Transformer의 핵심을 한 줄로 요약하면:
 
 RNN이 순차적으로 읽으면서 앞 정보를 잊어버리는 문제를 Attention으로 해결했고, 이게 현재 GPT, BERT, ChatGPT 등 거의 모든 대형 언어 모델의 기반 구조가 됐다.
 
-논문 제목이 "Attention Is All You Need"인 이유가 있다. 진짜로 Attention만으로 충분했다.
+다음으로는 self-attention, cross attention에 대해서 정리를 해보려 한다. 
