@@ -1,16 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
-import ShelfCard from '../components/ShelfCard.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-
-function getSeriesKey(title: string) {
-	return title.replace(/\s*\(\d+\)\s*$/, '').trim();
-}
-function getSeriesNum(title: string) {
-	const m = title.match(/\((\d+)\)\s*$/);
-	return m ? parseInt(m[1]) : 0;
-}
+import ShelfCard from '../components/ShelfCard.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getSeriesKey, getSeriesNum } from '../utils/series';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft));
 

@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import { getSeriesKey, getSeriesNum } from '../../utils/series';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -16,13 +17,6 @@ const post = Astro.props;
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
-function getSeriesKey(title: string) {
-	return title.replace(/\s*\(\d+\)\s*$/, '').trim();
-}
-function getSeriesNum(title: string) {
-	const m = title.match(/\((\d+)\)\s*$/);
-	return m ? parseInt(m[1]) : 0;
-}
 
 const seriesKey = getSeriesKey(post.data.title);
 const isSeries = getSeriesNum(post.data.title) > 0;

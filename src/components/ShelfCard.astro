@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
 import { categoryThemes, defaultTheme } from '../utils/categoryThemes';
+import { splitTitle } from '../utils/series';
 
 interface Props {
 	post: CollectionEntry<'blog'>;
@@ -10,9 +11,7 @@ interface Props {
 const { post } = Astro.props;
 
 const theme = categoryThemes[post.data.category] || defaultTheme;
-const titleLines = post.data.title.split(' ');
-const firstLine = titleLines.slice(0, Math.ceil(titleLines.length / 2)).join(' ');
-const secondLine = titleLines.slice(Math.ceil(titleLines.length / 2)).join(' ');
+const { firstLine, secondLine } = splitTitle(post.data.title);
 ---
 
 <article class="shelf-card">

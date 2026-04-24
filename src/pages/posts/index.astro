@@ -2,14 +2,7 @@
 import { getCollection } from 'astro:content';
 import PostCard from '../../components/PostCard.astro';
 import SiteLayout from '../../layouts/SiteLayout.astro';
-
-function getSeriesKey(title: string) {
-	return title.replace(/\s*\(\d+\)\s*$/, '').trim();
-}
-function getSeriesNum(title: string) {
-	const m = title.match(/\((\d+)\)\s*$/);
-	return m ? parseInt(m[1]) : 0;
-}
+import { getSeriesKey, getSeriesNum } from '../../utils/series';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft));
 
