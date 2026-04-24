@@ -19,7 +19,7 @@ draft: false
 비단 배차 시간이 긴 편이지만, 환승을 안 해도 된다는 것만으로도 얼마나 감사한 일인지,  <br>
 경기도민들은 공감할 것이다. <br>
 
-<img src="/images/posts/busbell/arrival-delay.png" alt="버스 정류장 전광판" style="max-width: 320px;" />
+<img src="/images/posts/busbell/arrival-delay.png" alt="버스 정류장 전광판" style="max-width: 500px;" />
 
 <br>
 보통 9시 30분까지 출근을 목표로 한다.<br>
