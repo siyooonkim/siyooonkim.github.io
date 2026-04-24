@@ -7,28 +7,28 @@ tags: []
 draft: false
 ---
 
-Transformer 논문("Attention Is All You Need")을 읽고 정리한 글이다. RNN 없이 Attention만으로 시퀀스를 처리할 수 있다는 게 핵심인데, 이게 GPT, BERT, ChatGPT까지 이어지는 시작점이다.
+Transformer 논문("Attention Is All You Need")을 읽고 정리한 글이다. RNN 없이 Attention만으로 시퀀스를 처리할 수 있다는 게 핵심인데, 이게 GPT, BERT, ChatGPT까지 이어지는 시작점이다.<br>
 
-논문을 읽기만 하면 이해한 것 같다가도 코드로 옮기면 모르는 게 드러난다. 그래서 PyTorch 구현과 함께 정리했다.
+논문을 읽기만 하면 이해한 것 같다가도 코드로 옮기면 모르는 게 드러난다. 그래서 PyTorch 구현과 함께 정리했다.<br>
 
 ---
 
 ## 왜 Attention인가
 
-기존 시퀀스 모델(RNN, LSTM)은 단어를 순서대로 처리한다. "나는 어제 서울에서 맛있는 밥을 먹었다"라는 문장이 있으면, "나는"부터 시작해서 "먹었다"까지 순차적으로 읽는다.
+기존 시퀀스 모델(RNN, LSTM)은 단어를 순서대로 처리한다. "나는 어제 서울에서 맛있는 밥을 먹었다"라는 문장이 있으면, "나는"부터 시작해서 "먹었다"까지 순차적으로 읽는다.<br>
 
-문제가 두 가지다.
+문제가 두 가지다.<br>
 
 1. **병렬 처리가 안 된다.** 앞 단어를 처리해야 뒷 단어를 처리할 수 있으니까.
 2. **긴 문장에서 앞부분을 잊어버린다.** 20번째 단어를 처리할 때 1번째 단어의 정보가 희미해진다.
 
-Attention은 이 두 문제를 한 번에 해결한다. 모든 단어가 다른 모든 단어를 동시에 참조할 수 있다. 순서대로 읽을 필요가 없으니 병렬 처리가 되고, 거리에 상관없이 직접 참조하니 앞부분을 잊어버릴 일도 없다.
+Attention은 이 두 문제를 한 번에 해결한다. 모든 단어가 다른 모든 단어를 동시에 참조할 수 있다. 순서대로 읽을 필요가 없으니 병렬 처리가 되고, 거리에 상관없이 직접 참조하니 앞부분을 잊어버릴 일도 없다.<br>
 
 ---
 
 ## Transformer 전체 구조
 
-Transformer는 Encoder와 Decoder로 구성된다. 번역을 예로 들면, Encoder가 입력 문장(독일어)을 이해하고, Decoder가 출력 문장(영어)을 생성한다.
+Transformer는 Encoder와 Decoder로 구성된다. 번역을 예로 들면, Encoder가 입력 문장(독일어)을 이해하고, Decoder가 출력 문장(영어)을 생성한다.<br>
 
 ```
 입력 (독일어)
@@ -42,9 +42,9 @@ Transformer는 Encoder와 Decoder로 구성된다. 번역을 예로 들면, Enco
 출력 (영어)
 ```
 
-논문에서는 N=6, 즉 Encoder 6층, Decoder 6층을 쌓았다.
+논문에서는 N=6, 즉 Encoder 6층, Decoder 6층을 쌓았다.<br>
 
-각 층의 내부는 이렇다.
+각 층의 내부는 이렇다.<br>
 
 ```
 Encoder 1층:
@@ -66,31 +66,31 @@ Decoder 1층:
 
 ## Query, Key, Value
 
-Attention의 핵심 개념이다.
+Attention의 핵심 개념이다.<br>
 
-도서관에서 책을 찾는 상황을 생각하면 된다.
+도서관에서 책을 찾는 상황을 생각하면 된다.<br>
 
 - **Query**: 내가 찾고 싶은 것. "딥러닝 입문서 있나요?"
 - **Key**: 각 책의 라벨. "이 책은 딥러닝", "이 책은 요리", "이 책은 수학"
 - **Value**: 실제 책의 내용.
 
-Query와 Key를 비교해서 관련도(점수)를 매기고, 그 점수에 따라 Value를 가중합한다. "딥러닝" 라벨이 붙은 책의 내용은 많이 반영하고, "요리" 라벨이 붙은 책은 거의 무시하는 식이다.
+Query와 Key를 비교해서 관련도(점수)를 매기고, 그 점수에 따라 Value를 가중합한다. "딥러닝" 라벨이 붙은 책의 내용은 많이 반영하고, "요리" 라벨이 붙은 책은 거의 무시하는 식이다.<br>
 
-수식으로 쓰면:
+수식으로 쓰면:<br>
 
 ```
 Attention(Q, K, V) = softmax(QK^T / √dk) × V
 ```
 
-`QK^T`가 Query와 Key의 유사도를 계산하는 부분이고, `√dk`로 나누는 건 값이 너무 커지면 softmax가 극단적으로 쏠리는 걸 방지하기 위해서다. softmax를 거치면 확률 분포가 되고, 이걸 Value에 곱해서 가중합을 구한다.
+`QK^T`가 Query와 Key의 유사도를 계산하는 부분이고, `√dk`로 나누는 건 값이 너무 커지면 softmax가 극단적으로 쏠리는 걸 방지하기 위해서다. softmax를 거치면 확률 분포가 되고, 이걸 Value에 곱해서 가중합을 구한다.<br>
 
 ---
 
 ## Multi-Head Attention
 
-Attention을 한 번만 하는 게 아니라, **여러 개의 "관점"으로 동시에** 수행한다. 이게 Multi-Head다.
+Attention을 한 번만 하는 게 아니라, **여러 개의 "관점"으로 동시에** 수행한다. 이게 Multi-Head다.<br>
 
-논문에서는 8개의 Head를 사용했다. 임베딩 차원이 512이면, 각 Head는 512/8 = 64차원을 담당한다.
+논문에서는 8개의 Head를 사용했다. 임베딩 차원이 512이면, 각 Head는 512/8 = 64차원을 담당한다.<br>
 
 ```python
 class MultiHeadAttentionLayer(nn.Module):
@@ -109,20 +109,20 @@ class MultiHeadAttentionLayer(nn.Module):
         self.scale = torch.sqrt(torch.FloatTensor([self.head_dim])).to(device)
 ```
 
-왜 여러 Head로 나누는가? 같은 문장에서도 문법적 관계, 의미적 관계, 위치적 관계 등 다양한 관점이 있다. Head 하나가 한 가지 관점을 학습하도록 유도하는 것이다.
+왜 여러 Head로 나누는가? 같은 문장에서도 문법적 관계, 의미적 관계, 위치적 관계 등 다양한 관점이 있다. Head 하나가 한 가지 관점을 학습하도록 유도하는 것이다.<br>
 
-"나는 어제 서울에서 밥을 먹었다"에서:
+"나는 어제 서울에서 밥을 먹었다"에서:<br>
 - Head 1은 "나는"과 "먹었다"의 주어-서술어 관계를 학습
 - Head 2는 "어제"와 "먹었다"의 시간-동작 관계를 학습
 - Head 3은 "서울에서"와 "밥을"의 장소-목적어 관계를 학습
 
-이런 식으로 서로 다른 관계를 병렬로 학습한다.
+이런 식으로 서로 다른 관계를 병렬로 학습한다.<br>
 
 ---
 
 ## Scaled Dot-Product Attention
 
-Multi-Head 안에서 실제로 Attention이 계산되는 부분이다.
+Multi-Head 안에서 실제로 Attention이 계산되는 부분이다.<br>
 
 ```python
 def forward(self, query, key, value, mask=None):
@@ -157,7 +157,7 @@ def forward(self, query, key, value, mask=None):
     return self.fc_o(x), attention
 ```
 
-과정을 정리하면:
+과정을 정리하면:<br>
 
 1. Q, K, V를 각각 Linear 레이어로 변환
 2. n_heads개로 분할 (512차원 → 8개 × 64차원)
@@ -172,15 +172,15 @@ def forward(self, query, key, value, mask=None):
 
 ## 마스킹
 
-마스크는 두 종류다.
+마스크는 두 종류다.<br>
 
 **Source Mask (패딩 마스크)**
 
-입력 문장의 길이가 다르면 짧은 문장에 `<pad>` 토큰을 채운다. 이 패딩은 의미가 없으니 Attention에서 무시해야 한다. 마스크 값을 0으로 설정하면 해당 위치의 energy가 -∞가 되고, softmax 후 확률이 0%에 가까워진다.
+입력 문장의 길이가 다르면 짧은 문장에 `<pad>` 토큰을 채운다. 이 패딩은 의미가 없으니 Attention에서 무시해야 한다. 마스크 값을 0으로 설정하면 해당 위치의 energy가 -∞가 되고, softmax 후 확률이 0%에 가까워진다.<br>
 
 **Target Mask (미래 단어 마스크)**
 
-Decoder에서 사용한다. "I ate rice"를 생성할 때, "I"를 생성하는 시점에서 "ate"나 "rice"를 미리 볼 수 없어야 한다. 현재 위치 이후의 단어를 전부 마스킹한다.
+Decoder에서 사용한다. "I ate rice"를 생성할 때, "I"를 생성하는 시점에서 "ate"나 "rice"를 미리 볼 수 없어야 한다. 현재 위치 이후의 단어를 전부 마스킹한다.<br>
 
 ```python
 # 하삼각 행렬로 미래 단어 차단
@@ -193,15 +193,15 @@ trg_sub_mask = torch.tril(torch.ones((trg_len, trg_len))).bool()
  [1, 1, 1]]
 ```
 
-1번째 단어는 자기 자신만, 2번째 단어는 1~2번째만, 3번째 단어는 1~3번째를 볼 수 있다.
+1번째 단어는 자기 자신만, 2번째 단어는 1~2번째만, 3번째 단어는 1~3번째를 볼 수 있다.<br>
 
 ---
 
 ## Positional Encoding
 
-Attention은 모든 단어를 동시에 보기 때문에, 순서 정보가 없다. "나는 밥을 먹었다"와 "밥을 나는 먹었다"가 같은 입력으로 처리된다.
+Attention은 모든 단어를 동시에 보기 때문에, 순서 정보가 없다. "나는 밥을 먹었다"와 "밥을 나는 먹었다"가 같은 입력으로 처리된다.<br>
 
-이걸 해결하기 위해 단어 임베딩에 위치 정보를 더한다. 논문에서는 sin/cos 함수를 사용했지만, 실제 구현에서는 학습 가능한 위치 임베딩을 사용하는 경우가 많다.
+이걸 해결하기 위해 단어 임베딩에 위치 정보를 더한다. 논문에서는 sin/cos 함수를 사용했지만, 실제 구현에서는 학습 가능한 위치 임베딩을 사용하는 경우가 많다.<br>
 
 ```python
 self.tok_embedding = nn.Embedding(input_dim, hidden_dim)   # 단어 임베딩
@@ -211,13 +211,13 @@ self.pos_embedding = nn.Embedding(max_length, hidden_dim)   # 위치 임베딩
 src = self.tok_embedding(src) * self.scale + self.pos_embedding(pos)
 ```
 
-`* self.scale`은 임베딩 값에 √hidden_dim을 곱하는 건데, 위치 임베딩과 스케일을 맞추기 위해서다.
+`* self.scale`은 임베딩 값에 √hidden_dim을 곱하는 건데, 위치 임베딩과 스케일을 맞추기 위해서다.<br>
 
 ---
 
 ## Feed-Forward Layer
 
-Attention 후에 오는 레이어다. 두 개의 Linear 사이에 ReLU를 끼운 구조. 각 단어 위치에 독립적으로 적용된다.
+Attention 후에 오는 레이어다. 두 개의 Linear 사이에 ReLU를 끼운 구조. 각 단어 위치에 독립적으로 적용된다.<br>
 
 ```python
 class PositionwiseFeedforwardLayer(nn.Module):
@@ -231,13 +231,13 @@ class PositionwiseFeedforwardLayer(nn.Module):
         return self.fc_2(x)
 ```
 
-입력과 출력 차원은 512로 동일하고, 내부 차원은 2048로 확장했다가 다시 줄인다. 비선형성을 추가하는 역할이다.
+입력과 출력 차원은 512로 동일하고, 내부 차원은 2048로 확장했다가 다시 줄인다. 비선형성을 추가하는 역할이다.<br>
 
 ---
 
 ## Residual Connection + Layer Normalization
 
-각 서브레이어(Attention, Feed-Forward)마다 입력을 출력에 더하고(Residual Connection), 정규화한다(Layer Norm).
+각 서브레이어(Attention, Feed-Forward)마다 입력을 출력에 더하고(Residual Connection), 정규화한다(Layer Norm).<br>
 
 ```python
 # Attention → Dropout → 입력과 더하기 → Layer Norm
@@ -245,18 +245,18 @@ _src, _ = self.self_attention(src, src, src, src_mask)
 src = self.self_attn_layer_norm(src + self.dropout(_src))
 ```
 
-Residual Connection은 "최소한 입력 정보는 보존한다"는 안전장치다. 레이어를 깊게 쌓아도 학습이 안정적이다.
+Residual Connection은 "최소한 입력 정보는 보존한다"는 안전장치다. 레이어를 깊게 쌓아도 학습이 안정적이다.<br>
 
 ---
 
 ## Encoder와 Decoder의 차이
 
-Encoder의 Self-Attention은 입력 문장 내에서 모든 단어가 서로를 참조한다. Q, K, V 전부 같은 입력에서 나온다.
+Encoder의 Self-Attention은 입력 문장 내에서 모든 단어가 서로를 참조한다. Q, K, V 전부 같은 입력에서 나온다.<br>
 
-Decoder는 두 종류의 Attention을 사용한다.
+Decoder는 두 종류의 Attention을 사용한다.<br>
 
-1. **Masked Self-Attention**: 출력 문장 내에서 자기 자신을 참조. 단, 미래 단어는 마스킹.
-2. **Encoder-Decoder Attention**: Q는 Decoder에서, K와 V는 Encoder의 출력에서 가져온다. 이렇게 해야 "입력 문장의 어떤 부분을 참조해서 다음 단어를 생성할지" 결정할 수 있다.
+1. **Masked Self-Attention**: 출력 문장 내에서 자기 자신을 참조. 단, 미래 단어는 마스킹.<br>
+2. **Encoder-Decoder Attention**: Q는 Decoder에서, K와 V는 Encoder의 출력에서 가져온다. 이렇게 해야 "입력 문장의 어떤 부분을 참조해서 다음 단어를 생성할지" 결정할 수 있다.<br>
 
 ```python
 # Decoder의 Encoder-Decoder Attention
@@ -268,10 +268,10 @@ _trg, attention = self.encoder_attention(trg, enc_src, enc_src, src_mask)
 
 ## 정리
 
-Transformer의 핵심을 한 줄로 요약하면:
+Transformer의 핵심을 한 줄로 요약하면:<br>
 
-> **모든 단어가 다른 모든 단어를 동시에 참조하되, 여러 관점(Head)에서 병렬로 수행한다.**
+> **모든 단어가 다른 모든 단어를 동시에 참조하되, 여러 관점(Head)에서 병렬로 수행한다.**<br>
 
-RNN이 순차적으로 읽으면서 앞 정보를 잊어버리는 문제를 Attention으로 해결했고, 이게 현재 GPT, BERT, ChatGPT 등 거의 모든 대형 언어 모델의 기반 구조가 됐다.
+RNN이 순차적으로 읽으면서 앞 정보를 잊어버리는 문제를 Attention으로 해결했고, 이게 현재 GPT, BERT, ChatGPT 등 거의 모든 대형 언어 모델의 기반 구조가 됐다.<br>
 
-다음으로는 self-attention, cross attention에 대해서 정리를 해보려 한다. 
+다음으로는 self-attention, cross attention에 대해서 정리를 해보려 한다.<br> 
