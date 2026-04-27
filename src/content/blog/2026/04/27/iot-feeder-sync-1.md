@@ -29,7 +29,7 @@ draft: false
 그 짧은 기다림이 스트레스로 이어지고,<br> 
 결국 한쪽 급식기에 몰려들어, 서로 머리로 밀어내며 하나의 사료를 두고 경쟁을 한다.<br>
 
-![고양이 급식기 경쟁](/images/posts/iot-feeder-sync-1/cats-fighting.png)
+<img src="/images/posts/iot-feeder-sync-1/cats-fighting.png" alt="고양이 급식기 경쟁" style="max-width: 400px;" />
 
 (이런 모습 마저 너무 귀엽긴 하지만)<br>
 문제는 단순히 "순서"가 아니다.<br>
