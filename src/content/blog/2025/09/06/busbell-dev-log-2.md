@@ -4,6 +4,8 @@ description: ''
 pubDate: '2025-09-06'
 updatedDate: '2025-09-06'
 category: '사이드 프로젝트'
+series: 'busbell'
+seriesOrder: 2
 tags: ['project', 'busbell', 'backend', 'nestjs', 'fcm', 'adapter-pattern']
 draft: false
 ---

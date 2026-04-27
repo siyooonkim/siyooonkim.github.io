@@ -3,6 +3,8 @@ title: '수십억 row 테이블 최적화하기 (3)'
 description: ''
 pubDate: '2025-11-21'
 category: '데이터베이스'
+series: 'actionlog-optimization'
+seriesOrder: 3
 tags: []
 draft: false
 ---

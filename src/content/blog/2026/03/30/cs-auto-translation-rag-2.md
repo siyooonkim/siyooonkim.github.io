@@ -3,6 +3,8 @@ title: 'CS 자동응답 챗봇 만들기 (2)'
 description: ''
 pubDate: '2026-03-30'
 category: '개발일지'
+series: 'cs-auto-chatbot'
+seriesOrder: 2
 tags: []
 draft: false
 ---

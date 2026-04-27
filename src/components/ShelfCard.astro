@@ -1,8 +1,8 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
-import { categoryThemes, defaultTheme } from '../utils/categoryThemes';
-import { splitTitle } from '../utils/series';
+import { categoryThemes, defaultTheme, seriesThemes } from '../utils/categoryThemes';
+import { getSeriesKey, splitTitle } from '../utils/series';
 
 interface Props {
 	post: CollectionEntry<'blog'>;
@@ -10,7 +10,8 @@ interface Props {
 
 const { post } = Astro.props;
 
-const theme = categoryThemes[post.data.category] || defaultTheme;
+const seriesKey = post.data.series || getSeriesKey(post.data.title);
+const theme = (post.data.series && seriesThemes[seriesKey]) || categoryThemes[post.data.category] || defaultTheme;
 const { firstLine, secondLine } = splitTitle(post.data.title);
 ---
 
@@ -249,7 +250,7 @@ const { firstLine, secondLine } = splitTitle(post.data.title);
 		display: flex;
 		flex-direction: column;
 		gap: 0.15rem;
-		font-size: 0.78rem;
+		font-size: 0.88rem;
 		font-weight: 700;
 		line-height: 1.3;
 		color: #1a1a1a;
@@ -273,7 +274,7 @@ const { firstLine, secondLine } = splitTitle(post.data.title);
 	}
 	h3 {
 		margin: 0;
-		font-size: 0.82rem;
+		font-size: 0.9rem;
 		font-weight: 600;
 		line-height: 1.4;
 		color: var(--text-strong);

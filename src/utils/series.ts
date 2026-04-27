@@ -7,6 +7,10 @@ export function getSeriesNum(title: string): number {
 	return m ? parseInt(m[1]) : 0;
 }
 
+export function getSeriesFromPost(post: { data: { series?: string; title: string } }): string {
+	return post.data.series || getSeriesKey(post.data.title);
+}
+
 export function splitTitle(title: string): { firstLine: string; secondLine: string } {
 	const words = title.split(' ');
 	const mid = Math.ceil(words.length / 2);

@@ -3,21 +3,21 @@ import { getCollection } from 'astro:content';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import ShelfCard from '../components/ShelfCard.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import { getSeriesKey, getSeriesNum } from '../utils/series';
+import { getSeriesFromPost, getSeriesNum } from '../utils/series';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft));
 
 const seriesLatest = new Map<string, number>();
 for (const p of allPosts) {
-	const key = getSeriesKey(p.data.title);
+	const key = getSeriesFromPost(p);
 	const val = p.data.pubDate.valueOf();
 	const prev = seriesLatest.get(key) || 0;
 	if (val > prev) seriesLatest.set(key, val);
 }
 
 const posts = allPosts.sort((a, b) => {
-	const keyA = getSeriesKey(a.data.title);
-	const keyB = getSeriesKey(b.data.title);
+	const keyA = getSeriesFromPost(a);
+	const keyB = getSeriesFromPost(b);
 	const latestA = seriesLatest.get(keyA) || 0;
 	const latestB = seriesLatest.get(keyB) || 0;
 	if (latestA !== latestB) return latestB - latestA;

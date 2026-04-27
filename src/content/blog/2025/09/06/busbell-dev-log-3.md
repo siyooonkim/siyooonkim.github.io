@@ -3,6 +3,8 @@ title: '답답해서 만든 버스 알림 앱 (3)'
 description: ''
 pubDate: '2025-09-06'
 category: '사이드 프로젝트'
+series: 'busbell'
+seriesOrder: 3
 tags: ['project', 'busbell']
 draft: false
 ---
