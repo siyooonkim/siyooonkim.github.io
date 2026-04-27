@@ -46,11 +46,17 @@ const groupedSections = sectionOrder
 <SiteLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
 	<main class="home-shell">
 		<section class="hero">
-			<h1>{SITE_TITLE}</h1>
+			<div class="profile-row">
+				<img src="/images/profile.jpg" alt="Siyoon" class="profile-photo" />
+				<div class="profile-text">
+					<h1>{SITE_TITLE}</h1>
+					<p class="profile-role">Backend Engineer</p>
+				</div>
+			</div>
 			<p class="hero-intro">
-				AI 시대를 살아가며,<br />
-				직접 글을 읽고 쓰는 지루함을 즐기기 위해 노력중입니다.<br />
-				요즘은 <strong>"성공적인 AX 사례"</strong>를 만들어보기 위한 여정에 있습니다.
+				Chasing the <strong>core</strong>.  <br/>
+				Building the <strong>solution</strong>.  <br/>
+				Leaving a <strong>trace</strong>. <br/> 
 			</p>
 			<div class="contact-links">
 				<a href="mailto:ksyoon0718@gmail.com" class="contact-link">
@@ -101,8 +107,31 @@ const groupedSections = sectionOrder
 		padding: 2.5rem 0 1.5rem;
 		text-align: center;
 	}
+	.profile-row {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.2rem;
+		margin-bottom: 1.2rem;
+	}
+	.profile-photo {
+		width: 72px;
+		height: 72px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 2px solid rgba(255, 255, 255, 0.1);
+	}
+	.profile-text {
+		text-align: left;
+	}
+	.profile-role {
+		margin: 0.2rem 0 0;
+		font-size: 0.85rem;
+		color: var(--text-muted);
+		font-weight: 500;
+	}
 	h1 {
-		margin: 0 0 1.2rem;
+		margin: 0;
 		font-size: clamp(1.8rem, 1.5rem + 1vw, 2.4rem);
 		letter-spacing: -0.02em;
 	}
